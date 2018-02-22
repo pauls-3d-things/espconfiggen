@@ -1,0 +1,27 @@
+{
+    "title": "DemoConfiguration",
+    "panels": [
+        {
+            "title": "Panel 1",
+            "entries": [
+                {
+                    "label": "String",
+                    "type": 1,
+                    "value": "Horst",
+                    "help": "Just a name"
+                },
+                {
+                    "label": "Number",
+                    "type": 0,
+                    "value": 1337,
+                    "help": " 1 - 10.000"
+                },
+                {
+                    "label": "Checkbox",
+                    "type": 2,
+                    "value": true
+                }
+            ]
+        }
+    ]
+}

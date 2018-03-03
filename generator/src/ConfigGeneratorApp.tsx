@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Config, ConfigEntry, InputType, str2InputType } from "./ConfigApi";
 import { applyEventToEntry, renderConfigPage } from "./ConfigWidgets";
-import { Title, Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container } from "bloomer";
+import { Title, Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container, Card, CardHeader, CardHeaderTitle, CardContent } from "bloomer";
 import { saveAs } from "file-saver";
 
 interface ConifgGeneratorAppState {
@@ -50,37 +50,28 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     }
 
     renderConfigMain(): any {
-        return (<Column isSize="1/3" >
-            <Field >
-                <Label isSize="small">Title</Label>
-                <Control>
-                    <Input isSize="small"
-                        type="text"
-                        value={"" + this.state.config.title}
-                        onChange={this.updateTitle}
-                    />
-                </Control>
-            </Field>
-            {!this.state.config.panels.length ? undefined :
-                <Field isGrouped>
+        return (
+            <div>
+
+                <Field >
+                    <Label isSize="small">Title</Label>
                     <Control>
-                        <Button isColor="primary" onClick={() => {
-                            const blob = new Blob([JSON.stringify(this.state.config)], { type: "text/plain;charset=utf-8" });
-                            saveAs(blob, "config.json");
-                        }} >
-                            Generate Code
-                    </Button>
+                        <Input isSize="small"
+                            type="text"
+                            value={"" + this.state.config.title}
+                            onChange={this.updateTitle}
+                        />
                     </Control>
                 </Field>
-            }
-        </Column>);
+            </div>
+        );
     }
 
     renderConfigPanel = () => {
         return (
-            <Column isSize="1/3">
+            <div>
                 <Label isSize="small">Panel:</Label>
-                {!this.state.config.title ? <p>Please add a title.</p> :
+                {!this.state.config.title ? <p>Please provide a title.</p> :
                     <div>
                         <Field>
                             <Control>
@@ -129,7 +120,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                         }
                     </div>
                 }
-            </Column>
+            </div>
         );
     }
 
@@ -182,39 +173,60 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         ]);
     }
     renderConfigItem = (currentItem: ConfigEntry): any => {
-        return (<Column isSize="1/3">
-            <Field>
-                <Label isSize="small">Item:</Label>
-                {this.state.config.panels.length === 0 ? <p>Please add a panel.</p> :
-                    <Control>
-                        {!currentItem ? undefined :
-                            <Select isSize="small"
-                                onChange={(event: React.FormEvent<HTMLInputElement>) => {
-                                    this.setState({ selectedItem: Number.parseInt(event.currentTarget.value) });
-                                    console.log("selected item", event.currentTarget.value);
+        return (
+            <div>
+                <Field>
+                    <Label isSize="small">Item:</Label>
+                    {this.state.config.panels.length === 0 ? <p>Please add a panel.</p> :
+                        <Control>
+                            {!currentItem ? undefined :
+                                <Select isSize="small"
+                                    onChange={(event: React.FormEvent<HTMLInputElement>) => {
+                                        this.setState({ selectedItem: Number.parseInt(event.currentTarget.value) });
+                                        console.log("selected item", event.currentTarget.value);
 
-                                }}>
-                                {this.state.config.panels[this.state.selectedPanel]
-                                    .entries.map((e, i) => <option value={i} selected={i === this.state.selectedItem}>{e.label}</option>)}
-                            </Select>}
-                        <Button
-                            isSize="small"
-                            onClick={() => {
-                                this.state.config.panels[this.state.selectedPanel]
-                                    .entries.push({
-                                        label: "Item " + (this.state.config.panels[this.state.selectedPanel].entries.length + 1),
-                                        help: "",
-                                        type: InputType.NUMBER,
-                                        value: ""
-                                    });
-                                this.setState({ selectedItem: this.state.config.panels[this.state.selectedPanel].entries.length - 1 });
-                            }}
-                        ><Icon icon="plus" /></Button>
-                    </Control>
-                }
-            </Field>
-            {!currentItem ? undefined : this.renderItemConfigDetail(currentItem)}
-        </Column>);
+                                    }}>
+                                    {this.state.config.panels[this.state.selectedPanel]
+                                        .entries.map((e, i) => <option value={i} selected={i === this.state.selectedItem}>{e.label}</option>)}
+                                </Select>}
+                            <Button
+                                isSize="small"
+                                onClick={() => {
+                                    this.state.config.panels[this.state.selectedPanel]
+                                        .entries.push({
+                                            label: "Item " + (this.state.config.panels[this.state.selectedPanel].entries.length + 1),
+                                            help: "",
+                                            type: InputType.NUMBER,
+                                            value: ""
+                                        });
+                                    this.setState({ selectedItem: this.state.config.panels[this.state.selectedPanel].entries.length - 1 });
+                                }}
+                            ><Icon icon="plus" /></Button>
+                        </Control>
+                    }
+                </Field>
+                {!currentItem ? undefined : this.renderItemConfigDetail(currentItem)}
+            </div>
+        );
+    }
+
+    renderSaveButton = () => {
+        return !this.state.config.panels.length ? undefined :
+            (
+                <div>
+                    <Field isGrouped>
+                        <Control>
+                            <Button isColor="primary" onClick={() => {
+                                const blob = new Blob([JSON.stringify(this.state.config)], { type: "text/plain;charset=utf-8" });
+                                saveAs(blob, "config.json");
+                            }} >
+                                Generate Code
+                        </Button>
+                        </Control>
+                    </Field>
+                </div>
+            );
+
     }
 
     render() {
@@ -223,15 +235,28 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         return <div>
             <Container>
                 <Title isSize={3}>ESP8266 Config Server Generator</Title>
-
                 <Columns>
-                    {this.renderConfigMain()}
-                    {this.renderConfigPanel()}
-                    {this.renderConfigItem(currentItem)}
+                    <Column isSize="1/4">
+                        <Card>
+                            <CardHeader>
+                                <CardHeaderTitle>Configuration</CardHeaderTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {this.renderConfigMain()}
+                                <hr />
+                                {this.renderConfigPanel()}
+                                <hr />
+                                {this.renderConfigItem(currentItem)}
+                                <hr />
+                                {this.renderSaveButton()}
+                            </CardContent>
+                        </Card>
+                    </Column>
+                    <Column isSize="3/4">
+                        {renderConfigPage(this.state.config, this.onEntryChange)}
+                    </Column>
                 </Columns>
             </Container>
-            <hr />
-            {renderConfigPage(this.state.config, this.onEntryChange)}
         </div >;
     }
 

@@ -109,7 +109,7 @@ export const renderConfigPage = (config: Config, onEntryChange: OnEntryChange) =
                     {!(config.panels[0] && config.panels[0].entries.length) ? undefined :
                         < Field isGrouped>
                             <Control>
-                                <Button isColor="primary">Save Config</Button>
+                                <Button isColor="primary">Save</Button>
                             </Control>
                         </Field>
                     }

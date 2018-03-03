@@ -234,7 +234,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
             && this.state.config.panels[this.state.selectedPanel].entries[this.state.selectedItem];
         return <div>
             <Container>
-                <Title isSize={3}>ESP8266 Config Server Generator</Title>
+                <Title size={4}>ESP Config Generator</Title>
                 <Columns>
                     <Column isSize="1/4">
                         <Card>
@@ -253,7 +253,14 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                         </Card>
                     </Column>
                     <Column isSize="3/4">
-                        {renderConfigPage(this.state.config, this.onEntryChange)}
+                        <Card>
+                            <CardHeader>
+                                <CardHeaderTitle>Preview</CardHeaderTitle>
+                            </CardHeader>
+                            <CardContent style={{ overflow: "scroll" }}>
+                                {renderConfigPage(this.state.config, this.onEntryChange)}
+                            </CardContent>
+                        </Card>
                     </Column>
                 </Columns>
             </Container>

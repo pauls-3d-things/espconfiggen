@@ -17,7 +17,10 @@ Clone this repository.
 ```bash
 cd generator
 npm install
-npm run start
+
+npm run build # compile for prod -> use this to obtain dist/data/*.gz
+#or
+npm run start # run dev server
 ```
 
 Open [http://localhost:8081](http://localhost:8081)

@@ -1,17 +1,34 @@
+var path = require('path');
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
+var entries = {};
+
+if (process.env.NODE_ENV == "production") {
+    entries.configApp = ["./src/IndexConfigApp.tsx"];
+}
+entries.generatorApp = ["./src/IndexGeneratorApp.tsx"];
 
 module.exports = {
-    entry: {
-        configApp: ["./lib/IndexConfigApp.js"],
-        generatorApp: ["./lib/IndexGeneratorApp.js"]
-    }
-    ,
-    output: {
-        path: __dirname,
-        filename: "dist/[name].bundle.min.js"
+    entry: entries,
+    module: {
+        rules: [
+            {
+                test: /.tsx?$/,
+                loaders: ['ts-loader'],
+                exclude: /node_modules/,
+                include: /src/
+            }
+        ]
     },
-    devtool: "source-map",
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js']
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: "[name].bundle.min.js"
+    },
+    devtool: "eval",
     devServer: {
         contentBase: "dist/",
         port: 8081,
@@ -23,6 +40,9 @@ module.exports = {
         // }
     },
     plugins: [
-        new UglifyJsPlugin()
+        new ForkTsCheckerWebpackPlugin({
+            tslint: true,
+            checkSyntacticErrors: true
+        })
     ]
 };

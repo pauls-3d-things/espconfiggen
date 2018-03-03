@@ -12,7 +12,6 @@ interface ConifgGeneratorAppState {
 }
 
 export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppState> {
-
     constructor(props: {}) {
         super(props);
         this.state = {
@@ -226,7 +225,10 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                     </Field>
                 </div>
             );
+    }
 
+    onPreviewSave = () => {
+        alert("This would save the entire config on the ESP.");
     }
 
     render() {
@@ -258,7 +260,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                 <CardHeaderTitle>Preview</CardHeaderTitle>
                             </CardHeader>
                             <CardContent style={{ overflow: "scroll" }}>
-                                {renderConfigPage(this.state.config, this.onEntryChange)}
+                                {renderConfigPage(this.state.config, this.onEntryChange, this.onPreviewSave)}
                             </CardContent>
                         </Card>
                     </Column>

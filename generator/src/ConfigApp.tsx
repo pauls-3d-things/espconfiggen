@@ -35,11 +35,15 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
     }
 
     render() {
-        return renderConfigPage(this.state.config, this.onEntryChange);
+        return renderConfigPage(this.state.config, this.onEntryChange, this.onSave);
     }
 
     onEntryChange = (entry: ConfigEntry, event: React.FormEvent<HTMLInputElement>) => {
         applyEventToEntry(entry, event);
         this.setState({ lastChange: Date.now() });
+    }
+
+    onSave = () => {
+        // TODO
     }
 }

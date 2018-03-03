@@ -1,7 +1,7 @@
 import * as React from "react";
 import {
     Container, Section, Title, Field, Control, Input, Checkbox, Column, Columns, Card,
-    CardHeader, CardHeaderTitle, CardContent, CardHeaderIcon, Icon, Content, Button, Label, Help
+    CardHeader, CardHeaderTitle, CardContent, Content, Button, Label, Help
 } from "bloomer";
 import { Config, ConfigPanel, ConfigEntry, InputType } from "./ConfigApi";
 
@@ -90,7 +90,7 @@ export const renderPanel = (panel: ConfigPanel, onEntryChange: OnEntryChange) =>
     </ Card>;
 };
 
-export const renderConfigPage = (config: Config, onEntryChange: OnEntryChange) => {
+export const renderConfigPage = (config: Config, onEntryChange: OnEntryChange, onSave: () => void) => {
     return (
         <Section>
             <Container>
@@ -109,7 +109,7 @@ export const renderConfigPage = (config: Config, onEntryChange: OnEntryChange) =
                     {!(config.panels[0] && config.panels[0].entries.length) ? undefined :
                         < Field isGrouped>
                             <Control>
-                                <Button isColor="primary">Save</Button>
+                                <Button isColor="primary" onClick={onSave}>Save</Button>
                             </Control>
                         </Field>
                     }

@@ -78,9 +78,9 @@ export const renderPanel = (panel: ConfigPanel, onEntryChange: OnEntryChange) =>
             <CardHeaderTitle>
                 {panel.title}
             </CardHeaderTitle>
-            < CardHeaderIcon >
+            {/* < CardHeaderIcon >
                 <Icon className="fa fa-angle-down" />
-            </CardHeaderIcon>
+            </CardHeaderIcon> */}
         </CardHeader>
         < CardContent >
             <Content>

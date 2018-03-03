@@ -49,7 +49,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         return options;
     }
 
-    renderConfigConfig(): any {
+    renderConfigMain(): any {
         return (<Column isSize="1/3" >
             <Field >
                 <Label isSize="small">Title</Label>
@@ -76,7 +76,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         </Column>);
     }
 
-    renderPanelConfig = () => {
+    renderConfigPanel = () => {
         return (
             <Column isSize="1/3">
                 <Label isSize="small">Panel:</Label>
@@ -181,7 +181,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
             </Field>
         ]);
     }
-    renderItemConfig = (currentItem: ConfigEntry): any => {
+    renderConfigItem = (currentItem: ConfigEntry): any => {
         return (<Column isSize="1/3">
             <Field>
                 <Label isSize="small">Item:</Label>
@@ -225,9 +225,9 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                 <Title isSize={3}>ESP8266 Config Server Generator</Title>
 
                 <Columns>
-                    {this.renderConfigConfig()}
-                    {this.renderPanelConfig()}
-                    {this.renderItemConfig(currentItem)}
+                    {this.renderConfigMain()}
+                    {this.renderConfigPanel()}
+                    {this.renderConfigItem(currentItem)}
                 </Columns>
             </Container>
             <hr />

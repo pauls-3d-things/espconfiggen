@@ -1,14 +1,11 @@
-#include "ConfigServerConfig.h"
 #include "ConfigServer.h"
+#include "ConfigServerConfig.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <EEPROM.h>
 #include <ESP8266WebServer.h>
 #include <FS.h>
 #include <user_interface.h>
-
-#define MAX_CONFIG_SIZE 1024
-#define HEADER_SIZE 4 + 1
 
 #define serve(server, uri, filePath, contentType)                              \
   {                                                                            \
@@ -58,13 +55,8 @@ void setupConfigServer(ESP8266WebServer &server, ConfigServerConfig &cfg) {
     /*
      *  Write Header
      */
-    // set id of saved config version
-    EEPROM.write(0, cfg.getId());
-    // set length of config
-    EEPROM.write(1, (byte)len);
-    EEPROM.write(2, (byte)len >> 8);
-    EEPROM.write(3, (byte)len >> 16);
-    EEPROM.write(4, (byte)len >> 24);
+    cfg.setConfigVersion(EEPROM, cfg.getId());
+    cfg.setConfigLength(EEPROM, len);
 
     /*
      * Write Data
@@ -85,21 +77,18 @@ void setupConfigServer(ESP8266WebServer &server, ConfigServerConfig &cfg) {
     /*
      *  Read Header
      */
-    // get id of stored config version
-    uint8_t id = EEPROM.read(0);
+    // get version of stored config version
+    uint8_t version = cfg.getConfigVersion(EEPROM);
 #ifdef DEBUG
-    Serial.println(cfg.getId());
+    Serial.println(version);
 #endif
     // check if generated config is present, otherwise allow migration of config
     // (via json)
-    if (cfg.getId() == 0) {
+    if (version == 0) {
       server.send(500, "application/json", "{\"error\": \"CFG_VERSION\"}");
     }
     // get length of config
-    uint32_t len = (unsigned int)(EEPROM.read(4) << 24) //
-                   | (EEPROM.read(3) << 16)             //
-                   | (EEPROM.read(2) << 8)              //
-                   | EEPROM.read(1);
+    uint32_t len = cfg.getConfigLength(EEPROM);
 #ifdef DEBUG
     Serial.println(len);
 #endif
@@ -113,10 +102,7 @@ void setupConfigServer(ESP8266WebServer &server, ConfigServerConfig &cfg) {
      * Read Data
      */
     char json[len + 1];
-    for (int n = 0; n < len; n++) {
-      json[n] = EEPROM.read(n + HEADER_SIZE);
-    }
-    json[len] = 0; // terminate string
+    cfg.getConfigString(EEPROM, json, len);
 
 #ifdef DEBUG
     Serial.println(json);

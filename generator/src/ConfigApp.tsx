@@ -45,13 +45,9 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
                 }
             })
             .then(fetchData)
-            .catch(() => this.setState({
-                config: {
-                    version: 0,
-                    title: "Error. Please reload.",
-                    panels: []
-                }
-            }));
+            .catch((e) => {
+                toastr.error("Error loading config", e);
+            });
     }
 
     render() {

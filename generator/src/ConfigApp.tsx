@@ -1,10 +1,12 @@
 import * as React from "react";
-import { Config, ConfigEntry } from "./ConfigApi";
+import { Config, ConfigEntry, getDataFromConfig, applyDataToConfig } from "./ConfigApi";
 import { applyEventToEntry, renderConfigPage } from "./ConfigWidgets";
+import * as toastr from "toastr";
 
 interface ConfigAppState {
     config: Config;
     lastChange: number;
+    saveEnabled: boolean;
 }
 
 export class ConfigApp extends React.Component<{}, ConfigAppState> {
@@ -16,26 +18,44 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
                 version: 0,
                 panels: []
             },
-            lastChange: Date.now()
+            lastChange: Date.now(),
+            saveEnabled: true
         };
     }
 
     componentDidMount() {
+        const fetchData = () => fetch("/data.json", { method: "GET" })
+            .then(resp => resp.json())
+            .then(data => {
+                if (!data.error) {
+                    applyDataToConfig(this.state.config, data);
+                    this.setState({ lastChange: Date.now() }); // trigger redraw of loaded data
+                } else {
+                    console.log(data);
+                }
+            });
+
         fetch("./config.json")
             .then(resp => resp.json())
             .then(config => {
-                this.setState({ config });
-            }).catch(() => this.setState({
+                if (!config.error) {
+                    this.setState({ config }); // display initial screen with defaults
+                } else {
+                    console.log(config);
+                }
+            })
+            .then(fetchData)
+            .catch(() => this.setState({
                 config: {
                     version: 0,
-                    title: "config.json failed to load.",
+                    title: "Error. Please reload.",
                     panels: []
                 }
             }));
     }
 
     render() {
-        return renderConfigPage(this.state.config, this.onEntryChange, this.onSave);
+        return renderConfigPage(this.state.config, this.onEntryChange, this.state.saveEnabled, this.onSave);
     }
 
     onEntryChange = (entry: ConfigEntry, event: React.FormEvent<HTMLInputElement>) => {
@@ -44,6 +64,22 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
     }
 
     onSave = () => {
-        // TODO
+        this.setState({ saveEnabled: false });
+
+        const data = getDataFromConfig(this.state.config);
+        fetch("/data.json", {
+            method: "POST",
+            body: JSON.stringify(data)
+        }).then(resp => resp.json()).then((json: any) => {
+            this.setState({ saveEnabled: true });
+            if (json.success) {
+                toastr.success("Saved.");
+            } else {
+                toastr.error("Error", json.error);
+            }
+        }).catch(e => {
+            toastr.error("Error", e);
+            this.setState({ saveEnabled: true });
+        });
     }
 }

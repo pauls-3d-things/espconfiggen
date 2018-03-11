@@ -1,8 +1,9 @@
 import * as React from "react";
-import { Config, ConfigEntry, InputType, str2InputType } from "./ConfigApi";
+import { Config, ConfigEntry, InputType, str2InputType, getDataFromConfig } from "./ConfigApi";
 import { applyEventToEntry, renderConfigPage } from "./ConfigWidgets";
 import { Title, Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container, Card, CardHeader, CardHeaderTitle, CardContent } from "bloomer";
 import { saveAs } from "file-saver";
+import * as toastr from "toastr";
 
 interface ConifgGeneratorAppState {
     config: Config;
@@ -228,7 +229,9 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     }
 
     onPreviewSave = () => {
-        alert("This would save the entire config on the ESP.");
+        const data = getDataFromConfig(this.state.config);
+        console.log(data);
+        toastr.success("Saved.", "This was just simulated.");
     }
 
     render() {
@@ -260,7 +263,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                 <CardHeaderTitle>Preview</CardHeaderTitle>
                             </CardHeader>
                             <CardContent style={{ overflow: "scroll" }}>
-                                {renderConfigPage(this.state.config, this.onEntryChange, this.onPreviewSave)}
+                                {renderConfigPage(this.state.config, this.onEntryChange, true, this.onPreviewSave)}
                             </CardContent>
                         </Card>
                     </Column>

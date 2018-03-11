@@ -8,11 +8,12 @@ export interface ConfigPanel {
     title: string;
     entries: ConfigEntry[];
 }
+export type ConfigEntryType = string | number | boolean;
 
 export interface ConfigEntry {
     label: string;
     type: InputType;
-    value: string | number | boolean;
+    value: ConfigEntryType;
     help?: string;
 }
 
@@ -23,3 +24,48 @@ export const str2InputType = (s: string): InputType => {
 export enum InputType {
     NUMBER = "N", STRING = "S", CHECKBOX = "C"
 }
+
+export interface ConfigDataEntry {
+    [index: string]: ConfigEntryType;
+}
+export interface ConfigData {
+    [index: string]: ConfigDataEntry;
+}
+
+/**
+ * Extracts the data from the config.
+ *
+ * @param config the config
+ */
+export const getDataFromConfig = (config: Config): ConfigData => {
+    const data: ConfigData = {};
+
+    config.panels.forEach((panel: ConfigPanel) => {
+        data[panel.title] = {} as ConfigDataEntry;
+        panel.entries.forEach((entry: ConfigEntry) => {
+            data[panel.title][entry.label] = entry.value;
+        });
+    });
+
+    return data;
+};
+
+/**
+ * Applies the data to the given config object.
+ *
+ * @param config the config
+ * @param data the data
+ */
+export const applyDataToConfig = (config: Config, data: ConfigData) => {
+    Object.keys(data).forEach(panelTitle => {
+        const panel = config.panels.find(panel => panel.title === panelTitle);
+        if (panel) {
+            Object.keys(data[panelTitle]).forEach(entryLabel => {
+                const entry = panel.entries.find(entry => entry.label === entryLabel);
+                if (entry) {
+                    entry.value = data[panelTitle][entryLabel];
+                }
+            });
+        }
+    });
+};

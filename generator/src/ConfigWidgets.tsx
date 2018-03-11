@@ -90,7 +90,7 @@ export const renderPanel = (panel: ConfigPanel, onEntryChange: OnEntryChange) =>
     </ Card>;
 };
 
-export const renderConfigPage = (config: Config, onEntryChange: OnEntryChange, onSave: () => void) => {
+export const renderConfigPage = (config: Config, onEntryChange: OnEntryChange, saveEnabled: boolean, onSave: () => void) => {
     return (
         <Section>
             <Container>
@@ -109,7 +109,7 @@ export const renderConfigPage = (config: Config, onEntryChange: OnEntryChange, o
                     {!(config.panels[0] && config.panels[0].entries.length) ? undefined :
                         < Field isGrouped>
                             <Control>
-                                <Button isColor="primary" onClick={onSave}>Save</Button>
+                                <Button isColor="primary" disabled={!saveEnabled} onClick={onSave}>Save</Button>
                             </Control>
                         </Field>
                     }

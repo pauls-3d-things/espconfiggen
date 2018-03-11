@@ -6,3 +6,5 @@
 src/GeneratedBuildInfo.h
 src/config.h
 data/
+.vscode/*.db
+.vscode/.browse.c_cpp.db*

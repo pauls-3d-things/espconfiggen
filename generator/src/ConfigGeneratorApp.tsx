@@ -1,15 +1,30 @@
 import * as React from "react";
 import { Config, ConfigEntry, InputType, str2InputType, getDataFromConfig } from "./ConfigApi";
 import { applyEventToEntry, renderConfigPage } from "./ConfigWidgets";
-import { Title, Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container, Card, CardHeader, CardHeaderTitle, CardContent } from "bloomer";
+import {
+    Title, Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container,
+    Card, CardHeader, CardContent, Tabs, TabList, Tab, TabLink, TextArea
+} from "bloomer";
 import { saveAs } from "file-saver";
 import * as toastr from "toastr";
 
+enum SelectedTab {
+    PREVIEW,
+    CONFIG_JSON,
+    CONFIG_CPP
+}
+
+enum SelectedNavTab {
+    EDIT,
+    GENERATE
+}
 interface ConifgGeneratorAppState {
     config: Config;
     lastChange: number;
     selectedPanel: number;
     selectedItem: number;
+    selectedTab: SelectedTab;
+    selectedNavTab: SelectedNavTab;
 }
 
 export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppState> {
@@ -23,7 +38,9 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
             },
             lastChange: Date.now(),
             selectedPanel: 0,
-            selectedItem: 0
+            selectedItem: 0,
+            selectedTab: SelectedTab.PREVIEW,
+            selectedNavTab: SelectedNavTab.EDIT
         };
     }
     redraw = () => {
@@ -220,12 +237,63 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                 const blob = new Blob([JSON.stringify(this.state.config)], { type: "text/plain;charset=utf-8" });
                                 saveAs(blob, "config.json");
                             }} >
-                                Generate Code
+                                Download Code
                         </Button>
                         </Control>
                     </Field>
                 </div>
             );
+    }
+
+    renderMainTabs = () => {
+        return (<Tabs>
+            <TabList>
+                <Tab isActive={this.state.selectedTab === SelectedTab.PREVIEW} onClick={() => this.setState({ selectedTab: SelectedTab.PREVIEW })}>
+                    <TabLink>
+                        <Icon isSize="small"><span className="fa fa-eye" /></Icon>
+                        <span>Preview</span>
+                    </TabLink>
+                </Tab>
+                <Tab isActive={this.state.selectedTab === SelectedTab.CONFIG_JSON} onClick={() => this.setState({ selectedTab: SelectedTab.CONFIG_JSON })}>
+                    <TabLink>
+                        <Icon isSize="small"><span className="fa fa-edit" /></Icon>
+                        <span>config.json</span>
+                    </TabLink>
+                </Tab>
+                <Tab isActive={this.state.selectedTab === SelectedTab.CONFIG_CPP} onClick={() => this.setState({ selectedTab: SelectedTab.CONFIG_CPP })}>
+                    <TabLink>
+                        <Icon isSize="small"><span className="fa fa-code" /></Icon>
+                        <span>Config.cpp</span>
+                    </TabLink>
+                </Tab>
+            </TabList>
+        </Tabs>);
+    }
+
+    renderJson = () => {
+        return (
+            <Field>
+                {/* <Label></Label> */}
+                <Control>
+                    <TextArea value={JSON.stringify(this.state.config)} />
+                </Control>
+            </Field>
+        );
+    }
+
+    generateCpp = (config: Config) => {
+        return "TODO";
+    }
+
+    renderCpp = () => {
+        return (
+            <Field>
+                {/* <Label></Label> */}
+                <Control>
+                    <TextArea value={this.generateCpp(this.state.config)} />
+                </Control>
+            </Field>
+        );
     }
 
     onPreviewSave = () => {
@@ -244,26 +312,49 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                     <Column isSize="1/4">
                         <Card>
                             <CardHeader>
-                                <CardHeaderTitle>Configuration</CardHeaderTitle>
+                                <Tabs>
+                                    <TabList>
+                                        <Tab isActive={this.state.selectedNavTab === SelectedNavTab.EDIT} onClick={() => this.setState({ selectedNavTab: SelectedNavTab.EDIT })}>
+                                            <TabLink>
+                                                <Icon isSize="small"><span className="fa fa-cog" /></Icon>
+                                                <span>Edit</span>
+                                            </TabLink>
+                                        </Tab>
+                                        <Tab isActive={this.state.selectedNavTab === SelectedNavTab.GENERATE} onClick={() => this.setState({ selectedNavTab: SelectedNavTab.GENERATE })}>
+                                            <TabLink>
+                                                <Icon isSize="small"><span className="fa fa-play" /></Icon>
+                                                <span>Generate</span>
+                                            </TabLink>
+                                        </Tab>
+                                    </TabList>
+                                </Tabs>
                             </CardHeader>
                             <CardContent>
-                                {this.renderConfigMain()}
-                                <hr />
-                                {this.renderConfigPanel()}
-                                <hr />
-                                {this.renderConfigItem(currentItem)}
-                                <hr />
-                                {this.renderSaveButton()}
+                                {this.state.selectedNavTab === SelectedNavTab.EDIT ?
+                                    <div>
+                                        {this.renderConfigMain()}
+                                        <hr />
+                                        {this.renderConfigPanel()}
+                                        <hr />
+                                        {this.renderConfigItem(currentItem)}
+                                    </div>
+                                    : // else
+                                    <div>
+                                        {this.renderSaveButton()}
+                                    </div>
+                                }
                             </CardContent>
                         </Card>
                     </Column>
                     <Column isSize="3/4">
                         <Card>
                             <CardHeader>
-                                <CardHeaderTitle>Preview</CardHeaderTitle>
+                                {this.renderMainTabs()}
                             </CardHeader>
                             <CardContent style={{ overflow: "scroll" }}>
-                                {renderConfigPage(this.state.config, this.onEntryChange, true, this.onPreviewSave)}
+                                {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.onEntryChange, true, this.onPreviewSave)}
+                                {this.state.selectedTab === SelectedTab.CONFIG_JSON && this.renderJson()}
+                                {this.state.selectedTab === SelectedTab.CONFIG_CPP}
                             </CardContent>
                         </Card>
                     </Column>

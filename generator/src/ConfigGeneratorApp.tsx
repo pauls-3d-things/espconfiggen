@@ -9,13 +9,14 @@ import {
 import { saveAs } from "file-saver";
 import * as toastr from "toastr";
 import MonacoEditor from "react-monaco-editor";
-import { generateConfigCpp } from "./CodeGenerator";
+import { generateConfigCpp, generateConfigH } from "./CodeGenerator";
 import { exampleHue, exampleNew, exampleTypes } from "./Examples";
 
 enum SelectedTab {
     PREVIEW,
     CONFIG_JSON,
-    CONFIG_CPP
+    CONFIG_CPP,
+    CONFIG_H
 }
 
 enum SelectedNavTab {
@@ -276,6 +277,12 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                         <span>Config.cpp</span>
                     </TabLink>
                 </Tab>
+                <Tab isActive={this.state.selectedTab === SelectedTab.CONFIG_H} onClick={() => this.setState({ selectedTab: SelectedTab.CONFIG_H })}>
+                    <TabLink>
+                        <Icon isSize="small"><span className="fa fa-code" /></Icon>
+                        <span>Config.h</span>
+                    </TabLink>
+                </Tab>
             </TabList>
         </Tabs>);
     }
@@ -327,11 +334,10 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     renderCpp = () => {
         return (
             <Field>
-                {/* <Label></Label> */}
                 <Control>
                     <MonacoEditor
                         width="100%"
-                        height="600"
+                        height="500"
                         language="cpp"
                         theme="vs-light"
                         value={generateConfigCpp(this.state.config)}
@@ -341,7 +347,30 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                         }}
                         onChange={undefined}
                         editorDidMount={(editor: monaco.editor.ICodeEditor) => {
-                            setTimeout(() => editor.getAction("editor.action.formatDocument").run(), 50);
+                            editor.focus();
+                        }}
+                    />
+                </Control>
+            </Field>
+        );
+    }
+
+    renderH = () => {
+        return (
+            <Field>
+                <Control>
+                    <MonacoEditor
+                        width="100%"
+                        height="500"
+                        language="cpp"
+                        theme="vs-light"
+                        value={generateConfigH(this.state.config)}
+                        options={{
+                            readOnly: true,
+                            selectOnLineNumbers: true
+                        }}
+                        onChange={undefined}
+                        editorDidMount={(editor: monaco.editor.ICodeEditor) => {
                             editor.focus();
                         }}
                     />
@@ -452,6 +481,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                     {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.onEntryChange, true, this.onPreviewSave)}
                                     {this.state.selectedTab === SelectedTab.CONFIG_JSON && this.renderJson()}
                                     {this.state.selectedTab === SelectedTab.CONFIG_CPP && this.renderCpp()}
+                                    {this.state.selectedTab === SelectedTab.CONFIG_H && this.renderH()}
                                 </CardContent>
                             </Card>
                         </Column>

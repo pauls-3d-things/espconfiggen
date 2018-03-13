@@ -4,7 +4,7 @@
 .vscode/launch.json
 .vscode/
 src/GeneratedBuildInfo.h
-src/config.h
+src/defines.h
 data/
 .vscode/*.db
 .vscode/.browse.c_cpp.db*

@@ -21,6 +21,17 @@ export const str2InputType = (s: string): InputType => {
     return s as InputType;
 };
 
+export const toCppType = (t: InputType) => {
+    switch (t) {
+        case InputType.NUMBER:
+            return "uint32_t";
+        case InputType.STRING:
+            return "const char*";
+        case InputType.CHECKBOX:
+            return "bool";
+    }
+};
+
 export enum InputType {
     NUMBER = "N", STRING = "S", CHECKBOX = "C"
 }

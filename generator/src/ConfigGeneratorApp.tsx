@@ -9,6 +9,8 @@ import {
 import { saveAs } from "file-saver";
 import * as toastr from "toastr";
 import MonacoEditor from "react-monaco-editor";
+import { generateConfigCpp } from "./CodeGenerator";
+import { exampleHue, exampleNew, exampleTypes } from "./Examples";
 
 enum SelectedTab {
     PREVIEW,
@@ -18,7 +20,8 @@ enum SelectedTab {
 
 enum SelectedNavTab {
     EDIT,
-    GENERATE
+    GENERATE,
+    EXAMPLES
 }
 interface ConifgGeneratorAppState {
     config: Config;
@@ -321,10 +324,6 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         );
     }
 
-    generateCpp = (config: Config) => {
-        return "// TODO: This class needs to be generated";
-    }
-
     renderCpp = () => {
         return (
             <Field>
@@ -335,7 +334,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                         height="600"
                         language="cpp"
                         theme="vs-light"
-                        value={this.generateCpp(this.state.config)}
+                        value={generateConfigCpp(this.state.config)}
                         options={{
                             readOnly: true,
                             selectOnLineNumbers: true
@@ -380,6 +379,15 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         );
     }
 
+    renderExamples = () => {
+        return (
+            <div>
+                <Button isOutlined isFullWidth isColor="primary" onClick={() => this.setState({ config: exampleNew as Config })}>New</Button>
+                <Button isOutlined isFullWidth isColor="primary" onClick={() => this.setState({ config: exampleTypes as Config })}>Types</Button>
+                <Button isOutlined isFullWidth isColor="primary" onClick={() => this.setState({ config: exampleHue as Config })}>Hue</Button>
+            </div>
+        );
+    }
     render() {
         const currentItem = this.state.config.panels[this.state.selectedPanel]
             && this.state.config.panels[this.state.selectedPanel].entries[this.state.selectedItem];
@@ -405,11 +413,17 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                                     <span>Generate</span>
                                                 </TabLink>
                                             </Tab>
+                                            <Tab isActive={this.state.selectedNavTab === SelectedNavTab.EXAMPLES} onClick={() => this.setState({ selectedNavTab: SelectedNavTab.EXAMPLES })}>
+                                                <TabLink>
+                                                    <Icon isSize="small"><span className="fa fa-list-ol" /></Icon>
+                                                    <span>Examples</span>
+                                                </TabLink>
+                                            </Tab>
                                         </TabList>
                                     </Tabs>
                                 </CardHeader>
                                 <CardContent>
-                                    {this.state.selectedNavTab === SelectedNavTab.EDIT ?
+                                    {this.state.selectedNavTab === SelectedNavTab.EDIT &&
                                         <div>
                                             {this.renderConfigMain()}
                                             <hr />
@@ -417,9 +431,13 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                             <hr />
                                             {this.renderConfigItem(currentItem)}
                                         </div>
-                                        : // else
+                                    }{this.state.selectedNavTab === SelectedNavTab.GENERATE &&
                                         <div>
                                             {this.renderSaveButton()}
+                                        </div>
+                                    }{this.state.selectedNavTab === SelectedNavTab.EXAMPLES &&
+                                        <div>
+                                            {this.renderExamples()}
                                         </div>
                                     }
                                 </CardContent>

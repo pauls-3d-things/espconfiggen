@@ -1,6 +1,7 @@
 var path = require('path');
 const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var entries = {};
 
@@ -43,6 +44,12 @@ module.exports = {
         new ForkTsCheckerWebpackPlugin({
             tslint: true,
             checkSyntacticErrors: true
-        })
+        }),
+        new CopyWebpackPlugin([
+            {
+                from: 'node_modules/monaco-editor/min/vs',
+                to: 'vs',
+            }
+        ])
     ]
 };

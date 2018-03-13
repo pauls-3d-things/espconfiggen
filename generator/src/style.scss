@@ -1,0 +1,13 @@
+@charset "utf-8";
+
+// 1. Import the initial variables
+@import "../node_modules/bulma/sass/utilities/initial-variables";
+@import "../node_modules/bulma/sass/utilities/functions";
+
+$primary: #00979d;
+$blue: #00979d;
+
+@import "../node_modules/bulma/bulma";
+
+@import "../node_modules/font-awesome/scss/font-awesome";
+@import "../node_modules/toastr/toastr";

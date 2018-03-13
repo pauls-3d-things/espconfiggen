@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "init:dist": "mkdirp dist",
-    "init:css": "sass src/style.sass dist/bundle.css && cssmin dist/bundle.css > dist/bundle.min.css",
+    "init:css": "sass src/style.scss dist/bundle.css && cssmin dist/bundle.css > dist/bundle.min.css",
     "init:html:local": "cssmin src/indexGeneratorApp.html > dist/index.html",
     "init:config": "cp src/config.json dist/",
     "init:fonts:dir": "mkdirp dist/fonts",

@@ -2,8 +2,9 @@ import * as React from "react";
 import { Config, ConfigEntry, InputType, str2InputType, getDataFromConfig } from "./ConfigApi";
 import { applyEventToEntry, renderConfigPage } from "./ConfigWidgets";
 import {
-    Title, Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container,
-    Card, CardHeader, CardContent, Tabs, TabList, Tab, TabLink
+    Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container,
+    Card, CardHeader, CardContent, Tabs, TabList, Tab, TabLink, Navbar,
+    NavbarItem, NavbarMenu, NavbarStart, NavbarEnd
 } from "bloomer";
 import { saveAs } from "file-saver";
 import * as toastr from "toastr";
@@ -356,65 +357,90 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         toastr.success("Saved.", "This was just simulated.");
     }
 
+    renderNavBar = () => {
+        return (
+            <Navbar className="espconfiggen_navbar">
+                <NavbarMenu isActive={true}>
+                    <NavbarStart>
+                        <NavbarItem href="#/">ESP Config Generator</NavbarItem>
+                    </NavbarStart>
+                    <NavbarEnd>
+                        <NavbarItem href="https://github.com/uvwxy/espconfiggen" target="_blank" isHidden="touch">
+                            <Icon className="fa fa-github" />
+                        </NavbarItem>
+                        <NavbarItem href="https://thingiverse.com/uvwxy" target="_blank" isHidden="touch">
+                            <Icon className="fa fa-cubes" />
+                        </NavbarItem>
+                        <NavbarItem href="https://www.instagram.com/pauls_3d_things" target="_blank" isHidden="touch">
+                            <Icon className="fa fa-instagram" />
+                        </NavbarItem>
+                    </NavbarEnd>
+                </NavbarMenu>
+            </Navbar>
+        );
+    }
+
     render() {
         const currentItem = this.state.config.panels[this.state.selectedPanel]
             && this.state.config.panels[this.state.selectedPanel].entries[this.state.selectedItem];
-        return <div>
-            <Container>
-                <Title size={4}>ESP Config Generator</Title>
-                <Columns>
-                    <Column isSize="1/4">
-                        <Card>
-                            <CardHeader>
-                                <Tabs>
-                                    <TabList>
-                                        <Tab isActive={this.state.selectedNavTab === SelectedNavTab.EDIT} onClick={() => this.setState({ selectedNavTab: SelectedNavTab.EDIT })}>
-                                            <TabLink>
-                                                <Icon isSize="small"><span className="fa fa-cog" /></Icon>
-                                                <span>Edit</span>
-                                            </TabLink>
-                                        </Tab>
-                                        <Tab isActive={this.state.selectedNavTab === SelectedNavTab.GENERATE} onClick={() => this.setState({ selectedNavTab: SelectedNavTab.GENERATE })}>
-                                            <TabLink>
-                                                <Icon isSize="small"><span className="fa fa-play" /></Icon>
-                                                <span>Generate</span>
-                                            </TabLink>
-                                        </Tab>
-                                    </TabList>
-                                </Tabs>
-                            </CardHeader>
-                            <CardContent>
-                                {this.state.selectedNavTab === SelectedNavTab.EDIT ?
-                                    <div>
-                                        {this.renderConfigMain()}
-                                        <hr />
-                                        {this.renderConfigPanel()}
-                                        <hr />
-                                        {this.renderConfigItem(currentItem)}
-                                    </div>
-                                    : // else
-                                    <div>
-                                        {this.renderSaveButton()}
-                                    </div>
-                                }
-                            </CardContent>
-                        </Card>
-                    </Column>
-                    <Column isSize="3/4">
-                        <Card>
-                            <CardHeader>
-                                {this.renderMainTabs()}
-                            </CardHeader>
-                            <CardContent style={{ overflow: "scroll" }}>
-                                {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.onEntryChange, true, this.onPreviewSave)}
-                                {this.state.selectedTab === SelectedTab.CONFIG_JSON && this.renderJson()}
-                                {this.state.selectedTab === SelectedTab.CONFIG_CPP && this.renderCpp()}
-                            </CardContent>
-                        </Card>
-                    </Column>
-                </Columns>
-            </Container>
-        </div >;
+        return (
+            <div>
+                {this.renderNavBar()}
+                <Container>
+                    <Columns>
+                        <Column isSize="1/4">
+                            <Card>
+                                <CardHeader>
+                                    <Tabs>
+                                        <TabList>
+                                            <Tab isActive={this.state.selectedNavTab === SelectedNavTab.EDIT} onClick={() => this.setState({ selectedNavTab: SelectedNavTab.EDIT })}>
+                                                <TabLink>
+                                                    <Icon isSize="small"><span className="fa fa-cog" /></Icon>
+                                                    <span>Edit</span>
+                                                </TabLink>
+                                            </Tab>
+                                            <Tab isActive={this.state.selectedNavTab === SelectedNavTab.GENERATE} onClick={() => this.setState({ selectedNavTab: SelectedNavTab.GENERATE })}>
+                                                <TabLink>
+                                                    <Icon isSize="small"><span className="fa fa-play" /></Icon>
+                                                    <span>Generate</span>
+                                                </TabLink>
+                                            </Tab>
+                                        </TabList>
+                                    </Tabs>
+                                </CardHeader>
+                                <CardContent>
+                                    {this.state.selectedNavTab === SelectedNavTab.EDIT ?
+                                        <div>
+                                            {this.renderConfigMain()}
+                                            <hr />
+                                            {this.renderConfigPanel()}
+                                            <hr />
+                                            {this.renderConfigItem(currentItem)}
+                                        </div>
+                                        : // else
+                                        <div>
+                                            {this.renderSaveButton()}
+                                        </div>
+                                    }
+                                </CardContent>
+                            </Card>
+                        </Column>
+                        <Column isSize="3/4">
+                            <Card>
+                                <CardHeader>
+                                    {this.renderMainTabs()}
+                                </CardHeader>
+                                <CardContent style={{ overflow: "scroll" }}>
+                                    {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.onEntryChange, true, this.onPreviewSave)}
+                                    {this.state.selectedTab === SelectedTab.CONFIG_JSON && this.renderJson()}
+                                    {this.state.selectedTab === SelectedTab.CONFIG_CPP && this.renderCpp()}
+                                </CardContent>
+                            </Card>
+                        </Column>
+                    </Columns>
+                </Container>
+            </div >
+        );
     }
 
     onEntryChange = (entry: ConfigEntry, event: React.FormEvent<HTMLInputElement>) => {

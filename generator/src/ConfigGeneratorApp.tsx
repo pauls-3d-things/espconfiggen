@@ -4,7 +4,7 @@ import { applyEventToEntry, renderConfigPage } from "./ConfigWidgets";
 import {
     Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container,
     Card, CardHeader, CardContent, Tabs, TabList, Tab, TabLink, Navbar,
-    NavbarItem, NavbarMenu, NavbarStart, NavbarEnd
+    NavbarItem, NavbarMenu, NavbarStart, NavbarEnd, NavbarLink, NavbarDropdown, CardHeaderTitle
 } from "bloomer";
 import { saveAs } from "file-saver";
 import * as toastr from "toastr";
@@ -19,18 +19,12 @@ enum SelectedTab {
     CONFIG_H
 }
 
-enum SelectedNavTab {
-    EDIT,
-    GENERATE,
-    EXAMPLES
-}
 interface ConifgGeneratorAppState {
     config: Config;
     lastChange: number;
     selectedPanel: number;
     selectedItem: number;
     selectedTab: SelectedTab;
-    selectedNavTab: SelectedNavTab;
 
     jsonEditor: monaco.editor.ICodeEditor | null;
 }
@@ -49,7 +43,6 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
             selectedPanel: 0,
             selectedItem: 0,
             selectedTab: SelectedTab.PREVIEW,
-            selectedNavTab: SelectedNavTab.EDIT,
 
             jsonEditor: null
         };
@@ -224,7 +217,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                         .entries.push({
                                             label: "Item " + (this.state.config.panels[this.state.selectedPanel].entries.length + 1),
                                             help: "",
-                                            type: InputType.NUMBER,
+                                            type: InputType.INTEGER,
                                             value: ""
                                         });
                                     this.setState({ selectedItem: this.state.config.panels[this.state.selectedPanel].entries.length - 1 });
@@ -238,22 +231,9 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         );
     }
 
-    renderSaveButton = () => {
-        return !this.state.config.panels.length ? undefined :
-            (
-                <div>
-                    <Field isGrouped>
-                        <Control>
-                            <Button isColor="primary" onClick={() => {
-                                const blob = new Blob([JSON.stringify(this.state.config)], { type: "text/plain;charset=utf-8" });
-                                saveAs(blob, "config.json");
-                            }} >
-                                Download Code
-                        </Button>
-                        </Control>
-                    </Field>
-                </div>
-            );
+    saveFile = (content: string, name: string) => {
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        saveAs(blob, name);
     }
 
     renderMainTabs = () => {
@@ -388,9 +368,11 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     renderNavBar = () => {
         return (
             <Navbar className="espconfiggen_navbar">
-                <NavbarMenu isActive={true}>
+                <NavbarMenu>
                     <NavbarStart>
-                        <NavbarItem href="#/">ESP Config Generator</NavbarItem>
+                        <NavbarItem>ESP Config Generator</NavbarItem>
+                        {this.renderNavFile()}
+                        {this.renderNavDownload()}
                     </NavbarStart>
                     <NavbarEnd>
                         <NavbarItem href="https://github.com/uvwxy/espconfiggen" target="_blank" isHidden="touch">
@@ -408,13 +390,36 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         );
     }
 
-    renderExamples = () => {
+    renderNavDownload = () => {
         return (
-            <div>
-                <Button isOutlined isFullWidth isColor="primary" onClick={() => this.setState({ config: exampleNew as Config })}>New</Button>
-                <Button isOutlined isFullWidth isColor="primary" onClick={() => this.setState({ config: exampleTypes as Config })}>Types</Button>
-                <Button isOutlined isFullWidth isColor="primary" onClick={() => this.setState({ config: exampleHue as Config })}>Hue</Button>
-            </div>
+            <NavbarItem hasDropdown isHoverable>
+                <NavbarLink href="#">Download</NavbarLink>
+                <NavbarDropdown>
+                    {
+                        [{ lbl: "config.json", fn: () => this.saveFile(JSON.stringify(this.state.config), "config.json") },
+                        { lbl: "Config.cpp", fn: () => this.saveFile(generateConfigCpp(this.state.config), "Config.cpp") },
+                        { lbl: "Config.h", fn: () => this.saveFile(generateConfigH(this.state.config), "Config.h") }
+                            // { lbl: "data.zip", fn: null }
+                        ].map(e => <NavbarItem key={e.lbl} onClick={e.fn} href="#">{e.lbl}</NavbarItem>)
+                    }
+                </NavbarDropdown>
+            </NavbarItem>
+        );
+    }
+
+    renderNavFile = () => {
+        return (
+            <NavbarItem hasDropdown isHoverable>
+                <NavbarLink href="#">File</NavbarLink>
+                <NavbarDropdown>
+                    {
+                        [{ lbl: "New", cfg: exampleNew },
+                        { lbl: "Available Types", cfg: exampleTypes },
+                        { lbl: "Hue Example", cfg: exampleHue }
+                        ].map(e => <NavbarItem key={e.lbl} onClick={() => this.setState({ config: e.cfg as Config })} href="#">{e.lbl}</NavbarItem>)
+                    }
+                </NavbarDropdown>
+            </NavbarItem>
         );
     }
     render() {
@@ -425,54 +430,25 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                 {this.renderNavBar()}
                 <Container>
                     <Columns>
-                        <Column isSize="1/4">
+                        <Column isSize={2}>
                             <Card>
                                 <CardHeader>
-                                    <Tabs>
-                                        <TabList>
-                                            <Tab isActive={this.state.selectedNavTab === SelectedNavTab.EDIT} onClick={() => this.setState({ selectedNavTab: SelectedNavTab.EDIT })}>
-                                                <TabLink>
-                                                    <Icon isSize="small"><span className="fa fa-cog" /></Icon>
-                                                    <span>Edit</span>
-                                                </TabLink>
-                                            </Tab>
-                                            <Tab isActive={this.state.selectedNavTab === SelectedNavTab.GENERATE} onClick={() => this.setState({ selectedNavTab: SelectedNavTab.GENERATE })}>
-                                                <TabLink>
-                                                    <Icon isSize="small"><span className="fa fa-play" /></Icon>
-                                                    <span>Generate</span>
-                                                </TabLink>
-                                            </Tab>
-                                            <Tab isActive={this.state.selectedNavTab === SelectedNavTab.EXAMPLES} onClick={() => this.setState({ selectedNavTab: SelectedNavTab.EXAMPLES })}>
-                                                <TabLink>
-                                                    <Icon isSize="small"><span className="fa fa-list-ol" /></Icon>
-                                                    <span>Examples</span>
-                                                </TabLink>
-                                            </Tab>
-                                        </TabList>
-                                    </Tabs>
+                                    <CardHeaderTitle>
+                                        Configuration
+                                   </CardHeaderTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    {this.state.selectedNavTab === SelectedNavTab.EDIT &&
-                                        <div>
-                                            {this.renderConfigMain()}
-                                            <hr />
-                                            {this.renderConfigPanel()}
-                                            <hr />
-                                            {this.renderConfigItem(currentItem)}
-                                        </div>
-                                    }{this.state.selectedNavTab === SelectedNavTab.GENERATE &&
-                                        <div>
-                                            {this.renderSaveButton()}
-                                        </div>
-                                    }{this.state.selectedNavTab === SelectedNavTab.EXAMPLES &&
-                                        <div>
-                                            {this.renderExamples()}
-                                        </div>
-                                    }
+                                    <div>
+                                        {this.renderConfigMain()}
+                                        <hr />
+                                        {this.renderConfigPanel()}
+                                        <hr />
+                                        {this.renderConfigItem(currentItem)}
+                                    </div>
                                 </CardContent>
                             </Card>
                         </Column>
-                        <Column isSize="3/4">
+                        <Column isSize={10}>
                             <Card>
                                 <CardHeader>
                                     {this.renderMainTabs()}

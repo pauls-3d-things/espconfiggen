@@ -10,7 +10,7 @@ export type OnEntryChange = (entry: ConfigEntry, event: React.FormEvent<HTMLInpu
 export const applyEventToEntry = (entry: any, event: React.FormEvent<HTMLInputElement>) => {
     switch (entry.type) {
         case InputType.STRING:
-        case InputType.NUMBER:
+        case InputType.INTEGER:
             entry.value = event.currentTarget.value;
             break;
         case InputType.CHECKBOX:
@@ -36,7 +36,7 @@ export const renderEntryInput = (entry: ConfigEntry, onEntryChange: OnEntryChang
                     </Control>
                 </div>
             );
-        case InputType.NUMBER:
+        case InputType.INTEGER:
             return (
                 <div key={entry.label + "div"} >
                     <Label>{entry.label} </Label>

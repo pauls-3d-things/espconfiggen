@@ -21,9 +21,13 @@ export const str2InputType = (s: string): InputType => {
     return s as InputType;
 };
 
+export enum InputType {
+    INTEGER = "N", STRING = "S", CHECKBOX = "C"
+}
+
 export const toCppType = (t: InputType) => {
     switch (t) {
-        case InputType.NUMBER:
+        case InputType.INTEGER:
             return "uint32_t";
         case InputType.STRING:
             return "const char*";
@@ -31,10 +35,6 @@ export const toCppType = (t: InputType) => {
             return "bool";
     }
 };
-
-export enum InputType {
-    NUMBER = "N", STRING = "S", CHECKBOX = "C"
-}
 
 export interface ConfigDataEntry {
     [index: string]: ConfigEntryType;

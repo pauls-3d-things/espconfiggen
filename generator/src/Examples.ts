@@ -7,10 +7,10 @@ export const exampleNew = {
 
 export const exampleTypes = {
     "version": 0,
-    "title": "Types",
+    "title": "Available Types",
     "panels": [
         {
-            "title": "Panel",
+            "title": "Basic Types",
             "entries": [
                 {
                     "label": "Number",

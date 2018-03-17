@@ -2,11 +2,11 @@
 
 Everyone with an ESP8266 lying around has an awesome idea what to do with it 😎 and all of you have probably figured out how to tackle the core problem of it. Maybe it's triggering a servo/motor/LED/speaker, or how to read a sensor. There is a library for almost everything. What I think is missing is an easy way to nicely configure an ESP via a webfronted hosted from the device itself, without any external dependencies. So I started this:
 
-![resources](docs/preview_1.png)
-![resources](docs/preview_2.png)
-![resources](docs/preview_3.png)
-![resources](docs/preview_4.png)
-![resources](docs/preview_5.png)
+![hue_1](docs/preview_1.png)
+![hue_2](docs/preview_2.png)
+![hue_3](docs/preview_3.png)
+![hue_4](docs/preview_4.png)
+![hue_5](docs/preview_5.png)
 
 This is
 

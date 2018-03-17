@@ -1,10 +1,10 @@
 import * as React from "react";
 import { ConfigEntry, InputType } from "../ConfigApi";
 import { CheckboxWidget } from "./CheckboxWidget";
-import { IntegerWidget } from "./IntegerWidget";
 import { InputWidget } from "./InputWidget";
 import { ConfigEntryWidget } from "./ConfigEntryWidget";
 import { HueWidget } from "./HueWidget";
+import { NumberWidget } from "./NumberWidget";
 
 export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void) => {
     let configEntryWidget;
@@ -14,7 +14,8 @@ export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void) => {
             configEntryWidget = InputWidget;
             break;
         case InputType.INTEGER:
-            configEntryWidget = IntegerWidget;
+        case InputType.FLOAT:
+            configEntryWidget = NumberWidget;
             break;
         case InputType.CHECKBOX:
             configEntryWidget = CheckboxWidget;

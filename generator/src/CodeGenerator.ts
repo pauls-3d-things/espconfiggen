@@ -34,7 +34,7 @@ const appendPanel = (code: string[], panel: ConfigPanel, generator: ConfigCodeGe
     panel.entries.forEach((entry: ConfigEntry) => generator(code, panel, entry));
 };
 
-export const generateMainpp = (config: Config): string => {
+export const generateMainCpp = (config: Config): string => {
     let code: string[] = [];
     code.push("#include \"Config.h\"");
     code.push("#include <Arduino.h>");

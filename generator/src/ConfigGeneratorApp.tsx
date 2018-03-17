@@ -8,7 +8,7 @@ import {
 import { saveAs } from "file-saver";
 import * as toastr from "toastr";
 import MonacoEditor from "react-monaco-editor";
-import { generateConfigCpp, generateConfigH, generateMainpp } from "./CodeGenerator";
+import { generateConfigCpp, generateConfigH, generateMainCpp } from "./CodeGenerator";
 import { exampleHue, exampleNew, exampleTypes } from "./Examples";
 import { renderConfigPage } from "./ConfigWidgets/ConfigPage";
 
@@ -326,7 +326,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                         height="500"
                         language="cpp"
                         theme="vs-light"
-                        value={generateMainpp(this.state.config)}
+                        value={generateMainCpp(this.state.config)}
                         options={{
                             readOnly: true,
                             selectOnLineNumbers: true
@@ -404,7 +404,9 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                     {
                         [{ lbl: "config.json", fn: () => this.saveFile(JSON.stringify(this.state.config), "config.json") },
                         { lbl: "Config.cpp", fn: () => this.saveFile(generateConfigCpp(this.state.config), "Config.cpp") },
-                        { lbl: "Config.h", fn: () => this.saveFile(generateConfigH(this.state.config), "Config.h") }
+                        { lbl: "Config.h", fn: () => this.saveFile(generateConfigH(this.state.config), "Config.h") },
+                        { lbl: "main.cpp", fn: () => this.saveFile(generateMainCpp(this.state.config), "main.cpp") }
+
                             // { lbl: "data.zip", fn: null }
                         ].map(e => <NavbarItem key={e.lbl} onClick={e.fn} href="#">{e.lbl}</NavbarItem>)
                     }

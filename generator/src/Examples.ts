@@ -13,20 +13,26 @@ export const exampleTypes = {
             "title": "Basic Types",
             "entries": [
                 {
-                    "label": "Number",
-                    "help": "This is a number type.",
-                    "type": "N",
+                    "label": "Integer",
+                    "help": "This is a number type. (uint32_t)",
+                    "type": "I",
+                    "value": ""
+                },
+                {
+                    "label": "Float",
+                    "help": "This is a number type. (float)",
+                    "type": "F",
                     "value": ""
                 },
                 {
                     "label": "String",
-                    "help": "This is a string type.",
+                    "help": "This is a string type. (char*)",
                     "type": "S",
                     "value": ""
                 },
                 {
                     "label": "Checkbox",
-                    "help": "This is a checkbox type.",
+                    "help": "This is a checkbox type. (bool)",
                     "type": "C",
                     "value": ""
                 }

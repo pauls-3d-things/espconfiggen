@@ -2,35 +2,49 @@
 #include "defines.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <BuildInfo.h>
 #include <ConfigServer.h>
 #include <ESP8266WebServer.h>
-#include <ESP8266WiFi.h>
-#include <Esp.h>
 #include <FS.h>
-#include <WiFiClient.h>
+#include <user_interface.h>
 
+ESP8266WebServer server(80);
+ConfigServer cfgServer;
 Config cfg;
-DynamicJsonBuffer jsonBuffer(MAX_CONFIG_SIZE);
 
 void setup() {
-  ConfigServer cfgServer;
-  cfgServer.beginOnReset(WIFI_SSID, WIFI_PASS, false, cfg);
+  Serial.begin(9600);
+  EEPROM.begin(MAX_CONFIG_SIZE);
+  SPIFFS.begin();
+
+  cfgServer.joinWifi(WIFI_SSID, WIFI_PASS, cfg, server, EEPROM);
 }
 
+uint8_t c = 0;
 void loop(void) {
-  // Assume we have a setup, then
-  EEPROM.begin(MAX_CONFIG_SIZE);
-  uint32_t len = cfg.getConfigLength(EEPROM);
-  char json[len + 1];
-  cfg.getConfigString(EEPROM, json, len);
-  JsonObject &root = jsonBuffer.parseObject(json);
+  server.handleClient();
 
-  uint32_t hueStart = cfg.getColorsStartColor(root);
-  uint32_t hueStop = cfg.getColorsEndColor(root);
-  const char* timeStart = cfg.getSchedulingStartTime(root);
-  const char* timeEnd = cfg.getSchedulingEndTime(root);
+  // Get the config object
+  if (c % 10 == 0 && cfg.getConfigVersion(EEPROM) == cfg.getId()) {
+    uint32_t len = cfg.getConfigLength(EEPROM);
+    char buf[len + 1];
+    cfg.getConfigString(EEPROM, buf, len);
+    Serial.println(buf);  
+    StaticJsonBuffer<MAX_CONFIG_SIZE> jsonBuffer;
+    JsonObject &root = jsonBuffer.parseObject(buf);
 
-  EEPROM.end();
-  delay(2000);
+    // Read values via API
+    const char *schedulingStartTime = cfg.getSchedulingStartTime(root);
+    Serial.println(schedulingStartTime);
+    const char *schedulingEndTime = cfg.getSchedulingEndTime(root);
+    Serial.println(schedulingEndTime);
+    uint32_t colorsStartColor = cfg.getColorsStartColor(root);
+    Serial.println(colorsStartColor);
+    uint32_t colorsEndColor = cfg.getColorsEndColor(root);
+    Serial.println(colorsEndColor);
+
+  } else if (cfg.getConfigVersion(EEPROM) != cfg.getId()) {
+    Serial.println("NO CONFIG");
+  }
+  delay(50);
+  c++;
 }

@@ -16,7 +16,7 @@
     });                                                                        \
   }
 
-void setupConfigServer(ESP8266WebServer &server, ConfigServerConfig &cfg) {
+void setupConfigServer(ESP8266WebServer &server, ConfigServerConfig &cfg, EEPROMClass &eeprom) {
   /*
    * Static Files from SPIFFS
    */
@@ -50,35 +50,30 @@ void setupConfigServer(ESP8266WebServer &server, ConfigServerConfig &cfg) {
       return;
     }
 
-    EEPROM.begin(MAX_CONFIG_SIZE);
-
     /*
      *  Write Header
      */
-    cfg.setConfigVersion(EEPROM, cfg.getId());
-    cfg.setConfigLength(EEPROM, len);
+    cfg.setConfigVersion(eeprom, cfg.getId());
+    cfg.setConfigLength(eeprom, len);
 
     /*
      * Write Data
      */
     for (int n = 0; n < len; n++) {
-      EEPROM.write(n + HEADER_SIZE, data[n]);
+      eeprom.write(n + HEADER_SIZE, data[n]);
     }
 
-    EEPROM.commit();
-    EEPROM.end();
+    eeprom.commit();
 
     server.send(200, "application/json", "{\"success\": \"CFG_SAVED\"}");
   });
 
   server.on("/data.json", HTTP_GET, [&]() {
-    EEPROM.begin(MAX_CONFIG_SIZE);
-
     /*
      *  Read Header
      */
     // get version of stored config version
-    uint8_t version = cfg.getConfigVersion(EEPROM);
+    uint8_t version = cfg.getConfigVersion(eeprom);
 #ifdef DEBUG
     Serial.println(version);
 #endif
@@ -88,7 +83,7 @@ void setupConfigServer(ESP8266WebServer &server, ConfigServerConfig &cfg) {
       server.send(500, "application/json", "{\"error\": \"CFG_VERSION\"}");
     }
     // get length of config
-    uint32_t len = cfg.getConfigLength(EEPROM);
+    uint32_t len = cfg.getConfigLength(eeprom);
 #ifdef DEBUG
     Serial.println(len);
 #endif
@@ -102,63 +97,39 @@ void setupConfigServer(ESP8266WebServer &server, ConfigServerConfig &cfg) {
      * Read Data
      */
     char json[len + 1];
-    cfg.getConfigString(EEPROM, json, len);
+    cfg.getConfigString(eeprom, json, len);
 
 #ifdef DEBUG
     Serial.println(json);
 #endif
 
-    EEPROM.end();
     server.send(200, "application/json", json);
   });
 }
 
-void ConfigServer::beginOnReset(char *wifi_ssid, char *wifi_pass, boolean ap,
-                                ConfigServerConfig &cfg) {
+void ConfigServer::joinWifi(const char *wifi_ssid, const char *wifi_pass,
+                         ConfigServerConfig &cfg, ESP8266WebServer &server, EEPROMClass &eeprom) {
   uint8_t tries = 0;
 
-  rst_info *rinfo;
-  Serial.begin(9600);
-  Serial.println();
-  rinfo = ESP.getResetInfoPtr();
-
+  WiFi.mode(WIFI_STA);
+  while (WiFi.status() != WL_CONNECTED) {
 #ifdef DEBUG
-  Serial.println(rinfo->reason);
+    Serial.println("Connecting to WIFI:");
+    Serial.println(wifi_ssid);
 #endif
-
-  switch (rinfo->reason) {
-  case REASON_EXT_SYS_RST:
-    // external reset button -> go into wifi mode
-#ifdef DEBUG
-    Serial.println("Caught RESET signal, starting ConfigServer");
-#endif
-
-    WiFi.mode(WIFI_STA);
-    while (WiFi.status() != WL_CONNECTED) {
-#ifdef DEBUG
-      Serial.println("Connecting to WIFI");
-#endif
-      if (tries % 10 == 0) {
-        WiFi.begin(wifi_ssid, wifi_pass);
-      }
-
-      delay(500);
-      tries++;
+    if (tries % 10 == 0) {
+      WiFi.begin(wifi_ssid, wifi_pass);
     }
 
-#ifdef DEBUG
-    Serial.println("Connected to WIFI");
-    Serial.println(WiFi.localIP());
-#endif
-
-    ESP8266WebServer server(80);
-    SPIFFS.begin();
-    setupConfigServer(server, cfg);
-    server.begin();
-
-    while (true) {
-      server.handleClient();
-    }
-    break;
+    delay(1000);
+    tries++;
   }
+
+#ifdef DEBUG
+  Serial.println("Connected to WIFI");
+  Serial.println(WiFi.localIP());
+#endif
+
+  setupConfigServer(server, cfg, eeprom);
+  server.begin();
 }

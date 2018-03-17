@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Config, ConfigEntry, InputType, str2InputType, getDataFromConfig } from "./ConfigApi";
-import { applyEventToEntry, renderConfigPage } from "./ConfigWidgets";
 import {
     Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container,
     Card, CardHeader, CardContent, Tabs, TabList, Tab, TabLink, Navbar,
@@ -9,14 +8,16 @@ import {
 import { saveAs } from "file-saver";
 import * as toastr from "toastr";
 import MonacoEditor from "react-monaco-editor";
-import { generateConfigCpp, generateConfigH } from "./CodeGenerator";
+import { generateConfigCpp, generateConfigH, generateMainpp } from "./CodeGenerator";
 import { exampleHue, exampleNew, exampleTypes } from "./Examples";
+import { renderConfigPage } from "./ConfigWidgets/ConfigPage";
 
 enum SelectedTab {
     PREVIEW,
     CONFIG_JSON,
     CONFIG_CPP,
-    CONFIG_H
+    CONFIG_H,
+    MAIN_CPP
 }
 
 interface ConifgGeneratorAppState {
@@ -239,32 +240,21 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     renderMainTabs = () => {
         return (<Tabs>
             <TabList>
-                <Tab isActive={this.state.selectedTab === SelectedTab.PREVIEW} onClick={this.selectPreview}>
-                    <TabLink>
-                        <Icon isSize="small"><span className="fa fa-eye" /></Icon>
-                        <span>Preview</span>
-                    </TabLink>
-                </Tab>
-                <Tab isActive={this.state.selectedTab === SelectedTab.CONFIG_JSON} onClick={this.selectJson}>
-                    <TabLink>
-                        <Icon isSize="small"><span className="fa fa-edit" /></Icon>
-                        <span>config.json</span>
-                    </TabLink>
-                </Tab>
-                <Tab isActive={this.state.selectedTab === SelectedTab.CONFIG_CPP} onClick={() => this.setState({ selectedTab: SelectedTab.CONFIG_CPP })}>
-                    <TabLink>
-                        <Icon isSize="small"><span className="fa fa-code" /></Icon>
-                        <span>Config.cpp</span>
-                    </TabLink>
-                </Tab>
-                <Tab isActive={this.state.selectedTab === SelectedTab.CONFIG_H} onClick={() => this.setState({ selectedTab: SelectedTab.CONFIG_H })}>
-                    <TabLink>
-                        <Icon isSize="small"><span className="fa fa-code" /></Icon>
-                        <span>Config.h</span>
-                    </TabLink>
-                </Tab>
+                {[
+                    { lbl: "UI", tab: SelectedTab.PREVIEW, ico: "fa fa-eye" },
+                    { lbl: "config.json", tab: SelectedTab.CONFIG_JSON, ico: "fa fa-edit" },
+                    { lbl: "Config.cpp", tab: SelectedTab.CONFIG_CPP, ico: "fa fa-code" },
+                    { lbl: "Config.h", tab: SelectedTab.CONFIG_H, ico: "fa fa-code" },
+                    { lbl: "main.cpp", tab: SelectedTab.MAIN_CPP, ico: "fa fa-code" }
+                ].map(e =>
+                    <Tab isActive={this.state.selectedTab === e.tab} onClick={() => this.setState({ selectedTab: e.tab })}>
+                        <TabLink>
+                            <Icon isSize="small"><span className={e.ico} /></Icon>
+                            <span>{e.lbl}</span>
+                        </TabLink>
+                    </Tab>)}
             </TabList>
-        </Tabs>);
+        </Tabs >);
     }
 
     onJsonChange = (updatedJson: string) => {
@@ -276,14 +266,6 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         } catch (e) {
             // else do nothing
         }
-    }
-
-    selectPreview = () => {
-        this.setState({ selectedTab: SelectedTab.PREVIEW });
-    }
-
-    selectJson = () => {
-        this.setState({ selectedTab: SelectedTab.CONFIG_JSON });
     }
 
     renderJson = () => {
@@ -321,6 +303,30 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                         language="cpp"
                         theme="vs-light"
                         value={generateConfigCpp(this.state.config)}
+                        options={{
+                            readOnly: true,
+                            selectOnLineNumbers: true
+                        }}
+                        onChange={undefined}
+                        editorDidMount={(editor: monaco.editor.ICodeEditor) => {
+                            editor.focus();
+                        }}
+                    />
+                </Control>
+            </Field>
+        );
+    }
+
+    renderMainCpp = () => {
+        return (
+            <Field>
+                <Control>
+                    <MonacoEditor
+                        width="100%"
+                        height="500"
+                        language="cpp"
+                        theme="vs-light"
+                        value={generateMainpp(this.state.config)}
                         options={{
                             readOnly: true,
                             selectOnLineNumbers: true
@@ -454,10 +460,11 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                     {this.renderMainTabs()}
                                 </CardHeader>
                                 <CardContent style={{ overflow: "scroll" }}>
-                                    {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.onEntryChange, true, this.onPreviewSave)}
+                                    {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.redraw, true, this.onPreviewSave)}
                                     {this.state.selectedTab === SelectedTab.CONFIG_JSON && this.renderJson()}
                                     {this.state.selectedTab === SelectedTab.CONFIG_CPP && this.renderCpp()}
                                     {this.state.selectedTab === SelectedTab.CONFIG_H && this.renderH()}
+                                    {this.state.selectedTab === SelectedTab.MAIN_CPP && this.renderMainCpp()}
                                 </CardContent>
                             </Card>
                         </Column>
@@ -465,11 +472,6 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                 </Container>
             </div >
         );
-    }
-
-    onEntryChange = (entry: ConfigEntry, event: React.FormEvent<HTMLInputElement>) => {
-        applyEventToEntry(entry, event);
-        this.redraw();
     }
 
 }

@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Config, ConfigEntry, getDataFromConfig, applyDataToConfig } from "./ConfigApi";
-import { applyEventToEntry, renderConfigPage } from "./ConfigWidgets";
+import { Config, getDataFromConfig, applyDataToConfig } from "./ConfigApi";
 import * as toastr from "toastr";
+import { renderConfigPage } from "./ConfigWidgets/ConfigPage";
 
 interface ConfigAppState {
     config: Config;
@@ -50,12 +50,7 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
             });
     }
 
-    render() {
-        return renderConfigPage(this.state.config, this.onEntryChange, this.state.saveEnabled, this.onSave);
-    }
-
-    onEntryChange = (entry: ConfigEntry, event: React.FormEvent<HTMLInputElement>) => {
-        applyEventToEntry(entry, event);
+    redraw = () => {
         this.setState({ lastChange: Date.now() });
     }
 
@@ -78,4 +73,9 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
             this.setState({ saveEnabled: true });
         });
     }
+
+    render() {
+        return renderConfigPage(this.state.config, this.redraw, this.state.saveEnabled, this.onSave);
+    }
+
 }

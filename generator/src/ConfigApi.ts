@@ -22,7 +22,7 @@ export const str2InputType = (s: string): InputType => {
 };
 
 export enum InputType {
-    INTEGER = "N", STRING = "S", CHECKBOX = "C"
+    INTEGER = "N", STRING = "S", CHECKBOX = "C", HUE = "H"
 }
 
 export const toCppType = (t: InputType) => {
@@ -33,6 +33,8 @@ export const toCppType = (t: InputType) => {
             return "const char*";
         case InputType.CHECKBOX:
             return "bool";
+        case InputType.HUE:
+            return "float";
     }
 };
 

@@ -31,6 +31,17 @@ export const exampleTypes = {
                     "value": ""
                 }
             ]
+        },
+        {
+            "title": "Derived Types",
+            "entries": [
+                {
+                    "label": "Hue",
+                    "help": "This is a hue type.",
+                    "type": "H",
+                    "value": ""
+                }
+            ]
         }
     ]
 };
@@ -62,14 +73,14 @@ export const exampleHue = {
                 {
                     "label": "Start Color",
                     "help": "Hue (65525)",
-                    "type": "N",
-                    "value": "0"
+                    "type": "H",
+                    "value": ""
                 },
                 {
                     "label": "End Color",
                     "help": "Hue (65525)",
-                    "type": "N",
-                    "value": "32000"
+                    "type": "H",
+                    "value": ""
                 }
             ]
         }

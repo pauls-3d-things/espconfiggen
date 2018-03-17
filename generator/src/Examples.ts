@@ -16,25 +16,25 @@ export const exampleTypes = {
                     "label": "Integer",
                     "help": "This is a number type. (uint32_t)",
                     "type": "I",
-                    "value": ""
+                    "value": 1337
                 },
                 {
                     "label": "Float",
                     "help": "This is a number type. (float)",
                     "type": "F",
-                    "value": ""
+                    "value": 123.45678
                 },
                 {
                     "label": "String",
                     "help": "This is a string type. (char*)",
                     "type": "S",
-                    "value": ""
+                    "value": "asdfjklö"
                 },
                 {
                     "label": "Checkbox",
                     "help": "This is a checkbox type. (bool)",
                     "type": "C",
-                    "value": ""
+                    "value": true
                 }
             ]
         },
@@ -45,7 +45,7 @@ export const exampleTypes = {
                     "label": "Hue",
                     "help": "This is a hue type.",
                     "type": "H",
-                    "value": ""
+                    "value": 42
                 }
             ]
         }

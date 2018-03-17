@@ -74,7 +74,6 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     renderConfigMain(): any {
         return (
             <div>
-
                 <Field >
                     <Label isSize="small">Title</Label>
                     <Control>
@@ -442,7 +441,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                             <Card>
                                 <CardHeader>
                                     <CardHeaderTitle>
-                                        Configuration
+                                        Edit
                                    </CardHeaderTitle>
                                 </CardHeader>
                                 <CardContent>

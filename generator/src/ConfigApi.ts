@@ -34,6 +34,7 @@ export const toCppType = (t: InputType) => {
         case InputType.CHECKBOX:
             return "bool";
         case InputType.HUE:
+        case InputType.FLOAT:
             return "float";
     }
 };

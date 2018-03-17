@@ -78,15 +78,13 @@ export const exampleHue = {
             "entries": [
                 {
                     "label": "Start Color",
-                    "help": "Hue (65525)",
                     "type": "H",
-                    "value": ""
+                    "value": 132
                 },
                 {
                     "label": "End Color",
-                    "help": "Hue (65525)",
                     "type": "H",
-                    "value": ""
+                    "value": 42
                 }
             ]
         }

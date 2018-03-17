@@ -3,35 +3,32 @@ import { Label } from "bloomer/lib/elements/Form/Label";
 import { Control } from "bloomer/lib/elements/Form/Control";
 import { Help } from "bloomer/lib/elements/Form/Help";
 import { Field } from "bloomer/lib/elements/Form/Field/Field";
-import { ConfigEntryWidget, ConfigEntryWidgetProps } from "./ConfigEntryWidget";
+import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
 import { HuePicker, ColorChangeHandler, ColorResult } from "react-color";
+import { ConfigEntry } from "../ConfigApi";
 const hslToHex = require("hsl-to-hex");
 
-interface HueWidgetState {
-    color: string;
-    hue: number;
-}
-
-export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, HueWidgetState> {
+export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigEntryWidgetState> {
 
     constructor(props: ConfigEntryWidgetProps) {
         super(props);
+    }
 
+    hueToHex = (entry: ConfigEntry) => {
         let h: number;
-        if (typeof (props.entry.value) === "number") {
-            h = props.entry.value;
-        } else if (typeof (props.entry.value) === "string") {
-            h = Number.parseFloat(props.entry.value) || 0;
+        if (typeof (entry.value) === "number") {
+            h = entry.value;
+        } else if (typeof (entry.value) === "string") {
+            h = Number.parseFloat(entry.value) || 0;
         } else {
             h = 0;
         }
-        this.state = { color: hslToHex(h, 100, 50), hue: h };
+        return hslToHex(h, 100, 50);
     }
 
     onEntryChangeComplete: ColorChangeHandler = (color: ColorResult) => {
         this.props.entry.value = color.hsl.h;
         this.props.onEntryChanged();
-        this.setState({ color: color.hex, hue: color.hsl.h });
     }
 
     render() {
@@ -40,8 +37,7 @@ export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, HueWidg
             <Field key={entry.label + "field"}>
                 <Label key={entry.label + "key"}> {entry.label} </Label>
                 <Control key={entry.label + "ctrl"} >
-                    <HuePicker color={this.state.color} onChangeComplete={this.onEntryChangeComplete} />
-                    <Help>Value: {this.state.hue}</Help>
+                    <HuePicker color={this.hueToHex(this.props.entry)} onChangeComplete={this.onEntryChangeComplete} />
                     {entry.help && <Help>{entry.help} </Help>}
                 </Control>
             </Field>

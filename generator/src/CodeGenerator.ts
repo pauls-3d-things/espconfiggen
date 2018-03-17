@@ -16,8 +16,8 @@ const toVar = (panel: ConfigPanel, entry: ConfigEntry) => {
 };
 
 const mainGenerator = (code: string[], panel: ConfigPanel, entry: ConfigEntry) => {
-    code.push(`  ${toCppType(entry.type)} ${toVar(panel, entry)} = cfg.get${toCamelCase(panel.title)}${toCamelCase(entry.label)}(root);`);
-    code.push(`  Serial.println(${toVar(panel, entry)});`);
+    code.push(`    ${toCppType(entry.type)} ${toVar(panel, entry)} = cfg.get${toCamelCase(panel.title)}${toCamelCase(entry.label)}(root);`);
+    code.push(`    Serial.println(${toVar(panel, entry)});`);
 };
 const hppGenerator = (code: string[], panel: ConfigPanel, entry: ConfigEntry) => {
     code.push(`      ${toCppType(entry.type)} get${toCamelCase(panel.title)}${toCamelCase(entry.label)}(JsonObject& root);`);
@@ -37,35 +37,50 @@ const appendPanel = (code: string[], panel: ConfigPanel, generator: ConfigCodeGe
 export const generateMainCpp = (config: Config): string => {
     let code: string[] = [];
     code.push("#include \"Config.h\"");
+    code.push("#include \"defines.h\"");
     code.push("#include <Arduino.h>");
     code.push("#include <ArduinoJson.h>");
     code.push("#include <ConfigServer.h>");
+    code.push("#include <ESP8266WebServer.h>");
+    code.push("#include <FS.h>");
     code.push("");
+    code.push("ESP8266WebServer server(80);");
+    code.push("ConfigServer cfgServer;");
     code.push("Config cfg;");
-    code.push("DynamicJsonBuffer jsonBuffer(MAX_CONFIG_SIZE);");
     code.push("");
     code.push("void setup() {");
-    code.push("  ConfigServer cfgServer;");
-    code.push("  // TODO: configure which network to join here");
-    code.push("  cfgServer.beginOnReset(\"asdf\", \"asdf\", false, cfg);");
+    code.push("  Serial.begin(9600);");
+    code.push("  EEPROM.begin(MAX_CONFIG_SIZE);");
+    code.push("  SPIFFS.begin();");
+    code.push("");
+    code.push("  // define WIFI_SSID,WIFI_PASS in defines.h, then add to .gitignore");
+    code.push("  cfgServer.joinWifi(WIFI_SSID, WIFI_PASS, cfg, server, EEPROM);");
     code.push("}");
     code.push("");
+    code.push("uint8_t c = 0;");
     code.push("void loop(void) {");
-    code.push("  // Get the config object");
-    code.push("  EEPROM.begin(MAX_CONFIG_SIZE);");
-    code.push("  uint32_t len = cfg.getConfigLength(EEPROM);");
-    code.push("  char buf[len + 1];");
-    code.push("  cfg.getConfigString(EEPROM, buf, len);");
-    code.push("  JsonObject &root = jsonBuffer.parseObject(buf);");
-    code.push("  EEPROM.end();");
+    code.push("  server.handleClient();");
     code.push("");
-    code.push("  // Read values via API");
+    code.push("  // Get the config object");
+    code.push("  if (c % 10 == 0 && cfg.getConfigVersion(EEPROM) == cfg.getId()) {");
+    code.push("    uint32_t len = cfg.getConfigLength(EEPROM);");
+    code.push("    char buf[len + 1];");
+    code.push("    cfg.getConfigString(EEPROM, buf, len);");
+    code.push("    StaticJsonBuffer<MAX_CONFIG_SIZE> jsonBuffer;");
+    code.push("    JsonObject &root = jsonBuffer.parseObject(buf);");
+    code.push("");
+    code.push("    // Read values via API");
 
     config.panels.forEach((panel: ConfigPanel) => appendPanel(code, panel, mainGenerator));
 
     code.push("");
-    code.push("  delay(2000);");
+    code.push("  } else if (cfg.getConfigVersion(EEPROM) != cfg.getId()) {");
+    code.push("    Serial.println(\"NO CONFIG\");");
+    code.push("  }");
+    code.push("  delay(50);");
+    code.push("  c++;");
     code.push("}");
+
     return code.join("\n");
 };
 

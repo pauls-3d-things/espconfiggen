@@ -1,7 +1,7 @@
 #include "Config.h"
 #include <Arduino.h>
 
-uint8_t Config::getId() { return 0; };
+uint8_t Config::getId() { return 1; };
 
 const char* Config::getSchedulingStartTime(JsonObject& root) {
   return root["Scheduling"]["Start Time"];

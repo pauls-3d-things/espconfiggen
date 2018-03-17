@@ -5,7 +5,6 @@
 #include <ConfigServer.h>
 #include <ESP8266WebServer.h>
 #include <FS.h>
-#include <user_interface.h>
 
 ESP8266WebServer server(80);
 ConfigServer cfgServer;
@@ -28,7 +27,6 @@ void loop(void) {
     uint32_t len = cfg.getConfigLength(EEPROM);
     char buf[len + 1];
     cfg.getConfigString(EEPROM, buf, len);
-    Serial.println(buf);  
     StaticJsonBuffer<MAX_CONFIG_SIZE> jsonBuffer;
     JsonObject &root = jsonBuffer.parseObject(buf);
 
@@ -37,9 +35,9 @@ void loop(void) {
     Serial.println(schedulingStartTime);
     const char *schedulingEndTime = cfg.getSchedulingEndTime(root);
     Serial.println(schedulingEndTime);
-    uint32_t colorsStartColor = cfg.getColorsStartColor(root);
+    float colorsStartColor = cfg.getColorsStartColor(root);
     Serial.println(colorsStartColor);
-    uint32_t colorsEndColor = cfg.getColorsEndColor(root);
+    float colorsEndColor = cfg.getColorsEndColor(root);
     Serial.println(colorsEndColor);
 
   } else if (cfg.getConfigVersion(EEPROM) != cfg.getId()) {

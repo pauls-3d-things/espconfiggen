@@ -2,15 +2,13 @@ import * as React from "react";
 import { Config, ConfigEntry, InputType, str2InputType, getDataFromConfig } from "./ConfigApi";
 import {
     Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container,
-    Card, CardHeader, CardContent, Tabs, TabList, Tab, TabLink, Navbar,
-    NavbarItem, NavbarMenu, NavbarStart, NavbarEnd, NavbarLink, NavbarDropdown, CardHeaderTitle
+    Card, CardHeader, CardContent, Tabs, TabList, Tab, TabLink, CardHeaderTitle
 } from "bloomer";
-import { saveAs } from "file-saver";
 import * as toastr from "toastr";
 import MonacoEditor from "react-monaco-editor";
 import { generateConfigCpp, generateConfigH, generateMainCpp } from "./CodeGenerator";
-import { exampleHue, exampleNew, exampleTypes } from "./Examples";
 import { renderConfigPage } from "./ConfigWidgets/ConfigPage";
+import { ConfigGenNavbar } from "./ConfigGeneratorWidgets/NavBar";
 
 enum SelectedTab {
     PREVIEW,
@@ -231,11 +229,6 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         );
     }
 
-    saveFile = (content: string, name: string) => {
-        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-        saveAs(blob, name);
-    }
-
     renderMainTabs = () => {
         return (<Tabs>
             <TabList>
@@ -370,71 +363,12 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         toastr.success("Saved.", "This was just simulated.");
     }
 
-    renderNavBar = () => {
-        return (
-            <Navbar className="espconfiggen_navbar">
-                <NavbarMenu>
-                    <NavbarStart>
-                        <NavbarItem>ESP Config Generator</NavbarItem>
-                        {this.renderNavFile()}
-                        {this.renderNavDownload()}
-                    </NavbarStart>
-                    <NavbarEnd>
-                        <NavbarItem href="https://github.com/uvwxy/espconfiggen" target="_blank" isHidden="touch">
-                            <Icon className="fa fa-github" />
-                        </NavbarItem>
-                        <NavbarItem href="https://thingiverse.com/uvwxy" target="_blank" isHidden="touch">
-                            <Icon className="fa fa-cubes" />
-                        </NavbarItem>
-                        <NavbarItem href="https://www.instagram.com/pauls_3d_things" target="_blank" isHidden="touch">
-                            <Icon className="fa fa-instagram" />
-                        </NavbarItem>
-                    </NavbarEnd>
-                </NavbarMenu>
-            </Navbar>
-        );
-    }
-
-    renderNavDownload = () => {
-        return (
-            <NavbarItem hasDropdown isHoverable>
-                <NavbarLink href="#">Download</NavbarLink>
-                <NavbarDropdown>
-                    {
-                        [{ lbl: "config.json", fn: () => this.saveFile(JSON.stringify(this.state.config), "config.json") },
-                        { lbl: "Config.cpp", fn: () => this.saveFile(generateConfigCpp(this.state.config), "Config.cpp") },
-                        { lbl: "Config.h", fn: () => this.saveFile(generateConfigH(this.state.config), "Config.h") },
-                        { lbl: "main.cpp", fn: () => this.saveFile(generateMainCpp(this.state.config), "main.cpp") }
-
-                            // { lbl: "data.zip", fn: null }
-                        ].map(e => <NavbarItem key={e.lbl} onClick={e.fn} href="#">{e.lbl}</NavbarItem>)
-                    }
-                </NavbarDropdown>
-            </NavbarItem>
-        );
-    }
-
-    renderNavFile = () => {
-        return (
-            <NavbarItem hasDropdown isHoverable>
-                <NavbarLink href="#">File</NavbarLink>
-                <NavbarDropdown>
-                    {
-                        [{ lbl: "New", cfg: exampleNew },
-                        { lbl: "Available Types", cfg: exampleTypes },
-                        { lbl: "Hue Example", cfg: exampleHue }
-                        ].map(e => <NavbarItem key={e.lbl} onClick={() => this.setState({ config: e.cfg as Config })} href="#">{e.lbl}</NavbarItem>)
-                    }
-                </NavbarDropdown>
-            </NavbarItem>
-        );
-    }
     render() {
         const currentItem = this.state.config.panels[this.state.selectedPanel]
             && this.state.config.panels[this.state.selectedPanel].entries[this.state.selectedItem];
         return (
             <div>
-                {this.renderNavBar()}
+                <ConfigGenNavbar config={this.state.config} onNavSelect={(config: Config) => this.setState({ config })} />
                 <Container>
                     <Columns>
                         <Column isSize={2}>

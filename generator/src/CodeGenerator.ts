@@ -1,4 +1,4 @@
-import { Config, ConfigPanel, ConfigEntry, toCppType } from "./ConfigApi";
+import { Config, ConfigPanel, ConfigEntry, toCppType, InputType } from "./ConfigApi";
 
 const toCamelCase = (label: string) => {
     // paul: this is a paste&mod from StackOverflow
@@ -13,6 +13,16 @@ type ConfigCodeGenerator = (code: string[], panel: ConfigPanel, entry: ConfigEnt
 const toVar = (panel: ConfigPanel, entry: ConfigEntry) => {
     const s = `${toCamelCase(panel.title)}${toCamelCase(entry.label)}`;
     return s.charAt(0).toLowerCase() + s.slice(1);
+};
+
+const mainApiGenerator = (code: string[], panel: ConfigPanel, entry: ConfigEntry) => {
+    code.push(`  // UI Button: ${entry.label}`);
+    if (entry.help) {
+        code.push(`  // Help text: ${entry.help}`);
+    }
+    code.push(`  server.on("${entry.value}", HTTP_GET, [&]() {`);
+    code.push(`    server.send(200, "application/json", "{\\"msg\\":\\"OK\\"}");`);
+    code.push(`  });`);
 };
 
 const mainGenerator = (code: string[], panel: ConfigPanel, entry: ConfigEntry) => {
@@ -30,8 +40,8 @@ const cppGenerator = (code: string[], panel: ConfigPanel, entry: ConfigEntry) =>
     code.push("}");
 };
 
-const appendPanel = (code: string[], panel: ConfigPanel, generator: ConfigCodeGenerator) => {
-    panel.entries.forEach((entry: ConfigEntry) => generator(code, panel, entry));
+const appendPanel = (code: string[], panel: ConfigPanel, generator: ConfigCodeGenerator, filter: (entry: ConfigEntry) => boolean) => {
+    panel.entries.filter(filter).forEach((entry: ConfigEntry) => generator(code, panel, entry));
 };
 
 export const generateMainCpp = (config: Config): string => {
@@ -52,9 +62,15 @@ export const generateMainCpp = (config: Config): string => {
     code.push("  Serial.begin(9600);");
     code.push("  EEPROM.begin(MAX_CONFIG_SIZE);");
     code.push("  SPIFFS.begin();");
+
+    code.push("");
+    code.push("  // implement your api actions here");
+    config.panels.forEach((panel: ConfigPanel) => appendPanel(code, panel, mainApiGenerator, e => e.type === InputType.APIBUTTON));
+
     code.push("");
     code.push("  // define WIFI_SSID,WIFI_PASS in defines.h, then add to .gitignore");
     code.push("  cfgServer.joinWifi(WIFI_SSID, WIFI_PASS, cfg, server, EEPROM);");
+
     code.push("}");
     code.push("");
     code.push("uint8_t c = 0;");
@@ -71,7 +87,7 @@ export const generateMainCpp = (config: Config): string => {
     code.push("");
     code.push("    // Read values via API");
 
-    config.panels.forEach((panel: ConfigPanel) => appendPanel(code, panel, mainGenerator));
+    config.panels.forEach((panel: ConfigPanel) => appendPanel(code, panel, mainGenerator, e => e.type !== InputType.APIBUTTON));
 
     code.push("");
     code.push("  } else if (cfg.getConfigVersion(EEPROM) != cfg.getId()) {");
@@ -95,7 +111,7 @@ export const generateConfigH = (config: Config): string => {
     code.push("class Config : public ConfigServerConfig {");
     code.push("    public:");
     code.push("      uint8_t getId();");
-    config.panels.forEach((panel: ConfigPanel) => appendPanel(code, panel, hppGenerator));
+    config.panels.forEach((panel: ConfigPanel) => appendPanel(code, panel, hppGenerator, e => e.type !== InputType.APIBUTTON));
     code.push("    };");
 
     code.push("#endif");
@@ -110,7 +126,7 @@ export const generateConfigCpp = (config: Config): string => {
     code.push("");
     code.push(`uint8_t Config::getId() { return ${config.version}; };`);
 
-    config.panels.forEach((panel: ConfigPanel) => appendPanel(code, panel, cppGenerator));
+    config.panels.forEach((panel: ConfigPanel) => appendPanel(code, panel, cppGenerator, e => e.type !== InputType.APIBUTTON));
 
     return code.join("\n");
 };

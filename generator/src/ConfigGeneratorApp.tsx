@@ -395,7 +395,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                     {this.renderMainTabs()}
                                 </CardHeader>
                                 <CardContent style={{ overflow: "scroll" }}>
-                                    {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.redraw, true, this.onPreviewSave)}
+                                    {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.redraw, true, this.onPreviewSave, true)}
                                     {this.state.selectedTab === SelectedTab.CONFIG_JSON && this.renderJson()}
                                     {this.state.selectedTab === SelectedTab.CONFIG_CPP && this.renderCpp()}
                                     {this.state.selectedTab === SelectedTab.CONFIG_H && this.renderH()}

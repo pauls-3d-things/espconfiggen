@@ -10,14 +10,18 @@ import { Field } from "bloomer/lib/elements/Form/Field/Field";
 import { Control } from "bloomer/lib/elements/Form/Control";
 import { Button } from "bloomer/lib/elements/Button";
 
-export const renderConfigPage = (config: Config, onEntryChanged: () => void, saveEnabled: boolean, onSave: () => void) => {
+export const renderConfigPage = (config: Config,
+    onEntryChanged: () => void,
+    saveEnabled: boolean,
+    onSave: () => void,
+    isInGeneratorApp: boolean) => {
     return (
         <Section>
             <Container>
                 <Title>{config.title || ""} </Title>
                 <div>
                     {config.panels
-                        .map((panel: ConfigPanel) => renderPanel(panel, onEntryChanged))
+                        .map((panel: ConfigPanel) => renderPanel(panel, onEntryChanged, isInGeneratorApp))
                         .reduce((rows: any[][], panel: JSX.Element, i: number) => {
                             const chunk = Math.floor(i / 3);
                             rows[chunk] = rows[chunk] || [];

@@ -5,8 +5,9 @@ import { InputWidget } from "./InputWidget";
 import { ConfigEntryWidget } from "./ConfigEntryWidget";
 import { HueWidget } from "./HueWidget";
 import { NumberWidget } from "./NumberWidget";
+import { ApiButtonWidget } from "./ApiButtonWidget";
 
-export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void) => {
+export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void, isInGeneratorApp: boolean) => {
     let configEntryWidget;
 
     switch (entry.type) {
@@ -23,9 +24,12 @@ export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void) => {
         case InputType.HUE:
             configEntryWidget = HueWidget;
             break;
+        case InputType.APIBUTTON:
+            configEntryWidget = ApiButtonWidget;
+            break;
         default:
             configEntryWidget = ConfigEntryWidget;
     }
 
-    return React.createElement(configEntryWidget, { entry, onEntryChanged });
+    return React.createElement(configEntryWidget, { entry, onEntryChanged, isInGeneratorApp });
 };

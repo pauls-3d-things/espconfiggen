@@ -15,6 +15,14 @@ void setup() {
   EEPROM.begin(MAX_CONFIG_SIZE);
   SPIFFS.begin();
 
+  // implement your api actions here
+  // UI Button: Toggle LED
+  // Help text: This is an ApiButton type, it will HTTP GET the configured URL
+  server.on("/api/led/1/toggle", HTTP_GET, [&]() {
+    server.send(200, "application/json", "{\"msg\":\"OK\"}");
+  });
+
+  // define WIFI_SSID,WIFI_PASS in defines.h, then add to .gitignore
   cfgServer.joinWifi(WIFI_SSID, WIFI_PASS, cfg, server, EEPROM);
 }
 
@@ -31,14 +39,16 @@ void loop(void) {
     JsonObject &root = jsonBuffer.parseObject(buf);
 
     // Read values via API
-    const char *schedulingStartTime = cfg.getSchedulingStartTime(root);
-    Serial.println(schedulingStartTime);
-    const char *schedulingEndTime = cfg.getSchedulingEndTime(root);
-    Serial.println(schedulingEndTime);
-    float colorsStartColor = cfg.getColorsStartColor(root);
-    Serial.println(colorsStartColor);
-    float colorsEndColor = cfg.getColorsEndColor(root);
-    Serial.println(colorsEndColor);
+    uint32_t basicTypesInteger = cfg.getBasicTypesInteger(root);
+    Serial.println(basicTypesInteger);
+    float basicTypesFloat = cfg.getBasicTypesFloat(root);
+    Serial.println(basicTypesFloat);
+    const char* basicTypesString = cfg.getBasicTypesString(root);
+    Serial.println(basicTypesString);
+    bool basicTypesCheckbox = cfg.getBasicTypesCheckbox(root);
+    Serial.println(basicTypesCheckbox);
+    float extendedTypesHue = cfg.getExtendedTypesHue(root);
+    Serial.println(extendedTypesHue);
 
   } else if (cfg.getConfigVersion(EEPROM) != cfg.getId()) {
     Serial.println("NO CONFIG");

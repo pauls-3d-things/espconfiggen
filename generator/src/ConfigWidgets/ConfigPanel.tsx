@@ -7,7 +7,7 @@ import { CardContent } from "bloomer/lib/components/Card/CardContent";
 import { Content } from "bloomer/lib/elements/Content";
 import { renderEntry } from "./ConfigEntry";
 
-export const renderPanel = (panel: ConfigPanel, onEntryChanged: () => void) => {
+export const renderPanel = (panel: ConfigPanel, onEntryChanged: () => void, isInGeneratorApp: boolean) => {
     return <Card key={panel.title + "panel"}>
         <CardHeader>
             <CardHeaderTitle>
@@ -19,7 +19,7 @@ export const renderPanel = (panel: ConfigPanel, onEntryChanged: () => void) => {
         </CardHeader>
         <CardContent>
             <Content>
-                {panel.entries.map(entry => renderEntry(entry, onEntryChanged))}
+                {panel.entries.map(entry => renderEntry(entry, onEntryChanged, isInGeneratorApp))}
             </Content>
         </CardContent>
     </ Card>;

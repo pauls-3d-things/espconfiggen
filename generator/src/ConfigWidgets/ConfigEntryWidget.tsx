@@ -2,6 +2,7 @@ import * as React from "react";
 import { ConfigEntry } from "../ConfigApi";
 
 export interface ConfigEntryWidgetProps {
+    isInGeneratorApp: boolean;
     onEntryChanged: () => void;
     entry: ConfigEntry;
 }

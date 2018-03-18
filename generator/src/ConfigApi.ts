@@ -22,7 +22,12 @@ export const str2InputType = (s: string): InputType => {
 };
 
 export enum InputType {
-    INTEGER = "I", STRING = "S", CHECKBOX = "C", HUE = "H", FLOAT = "F"
+    INTEGER = "I",
+    STRING = "S",
+    CHECKBOX = "C",
+    HUE = "H",
+    FLOAT = "F",
+    APIBUTTON = "A"
 }
 
 export const toCppType = (t: InputType) => {

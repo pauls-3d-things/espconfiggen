@@ -75,7 +75,7 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
     }
 
     render() {
-        return renderConfigPage(this.state.config, this.redraw, this.state.saveEnabled, this.onSave);
+        return renderConfigPage(this.state.config, this.redraw, this.state.saveEnabled, this.onSave, false);
     }
 
 }

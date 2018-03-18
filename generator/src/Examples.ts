@@ -39,13 +39,19 @@ export const exampleTypes = {
             ]
         },
         {
-            "title": "Derived Types",
+            "title": "Extended Types",
             "entries": [
                 {
                     "label": "Hue",
-                    "help": "This is a hue type.",
+                    "help": "This is a Hue type.",
                     "type": "H",
                     "value": 42
+                },
+                {
+                    "label": "Toggle LED",
+                    "help": "This is an ApiButton type, it will HTTP GET the configured URL",
+                    "type": "A",
+                    "value": "/api/led/1/toggle"
                 }
             ]
         }

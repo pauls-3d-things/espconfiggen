@@ -37,7 +37,10 @@ export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigE
             <Field key={entry.label + "field"}>
                 <Label key={entry.label + "key"}> {entry.label} </Label>
                 <Control key={entry.label + "ctrl"} >
-                    <HuePicker color={this.hueToHex(this.props.entry)} onChangeComplete={this.onEntryChangeComplete} />
+                    <HuePicker
+                        color={this.hueToHex(this.props.entry)}
+                        width="100%"
+                        onChangeComplete={this.onEntryChangeComplete} />
                     {entry.help && <Help>{entry.help} </Help>}
                 </Control>
             </Field>

@@ -25,13 +25,14 @@ export const renderNavDownload = (config: Config) => {
             <NavbarLink href="#" > Download </NavbarLink>
             < NavbarDropdown >
                 {
-                    [{ lbl: "config.json", fn: () => saveFile(JSON.stringify(config), "config.json") },
-                    { lbl: "Config.cpp", fn: () => saveFile(generateConfigCpp(config), "Config.cpp") },
-                    { lbl: "Config.h", fn: () => saveFile(generateConfigH(config), "Config.h") },
-                    { lbl: "main.cpp", fn: () => saveFile(generateMainCpp(config), "main.cpp") }
+                    [{ lbl: "config.json", fn: () => saveFile(JSON.stringify(config), "config.json"), href: "#" },
+                    { lbl: "Config.cpp", fn: () => saveFile(generateConfigCpp(config), "Config.cpp"), href: "#" },
+                    { lbl: "Config.h", fn: () => saveFile(generateConfigH(config), "Config.h"), href: "#" },
+                    { lbl: "main.cpp", fn: () => saveFile(generateMainCpp(config), "main.cpp"), href: "#" },
+                    { lbl: "data.zip", fn: undefined, href: "./data.zip" }
 
                         // { lbl: "data.zip", fn: null }
-                    ].map(e => <NavbarItem key={e.lbl} onClick={e.fn} href="#" > {e.lbl} </NavbarItem>)
+                    ].map(e => <NavbarItem key={e.lbl} onClick={e.fn} href={e.href} > {e.lbl} </NavbarItem>)
                 }
             </NavbarDropdown>
         </NavbarItem>

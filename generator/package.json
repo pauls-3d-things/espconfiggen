@@ -19,6 +19,7 @@
     "gzip:css": "cat dist/bundle.min.css | gzip > dist/data/bundle.min.css.gz",
     "gzip:js": "cat dist/configApp.bundle.min.js | gzip > dist/data/bundle.min.js.gz",
     "gzip:html": "cat src/indexConfigApp.html | gzip > dist/data/index.html.gz",
+    "gzip:zip": "cd dist/ && zip -r data.zip data/",
     "gzip": "npm-run-all gzip:*",
     "build": "npm-run-all clean init webpack:prod gzip",
     "start": "npm-run-all clean init webpack:dev"

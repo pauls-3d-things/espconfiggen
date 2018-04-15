@@ -48,7 +48,7 @@ export const renderNavFile = (onNavSelect: (config: Config) => void) => {
                     [{ lbl: "New", cfg: exampleNew },
                     { lbl: "Available Types", cfg: exampleTypes },
                     { lbl: "Hue Example", cfg: exampleHue },
-                    { lbl: "Wifi Setup Example", cfg: exampleWifiSetup },
+                    { lbl: "Wifi Setup Example", cfg: exampleWifiSetup }
                     ].map(e => <NavbarItem key={e.lbl} onClick={() => onNavSelect(e.cfg as Config)} href="#" > {e.lbl} </NavbarItem>)
                 }
             </NavbarDropdown>

@@ -103,7 +103,6 @@ export const exampleHue = {
     ]
 };
 
-
 export const exampleWifiSetup = {
     "version": 0,
     "title": "Wifi Setup Example",

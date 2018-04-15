@@ -6,6 +6,7 @@ import { ConfigEntryWidget } from "./ConfigEntryWidget";
 import { HueWidget } from "./HueWidget";
 import { NumberWidget } from "./NumberWidget";
 import { ApiButtonWidget } from "./ApiButtonWidget";
+import { PasswordWidget } from "./PasswordWidget";
 
 export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void, isInGeneratorApp: boolean) => {
     let configEntryWidget;
@@ -26,6 +27,9 @@ export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void, isIn
             break;
         case InputType.APIBUTTON:
             configEntryWidget = ApiButtonWidget;
+            break;
+        case InputType.PASSWORD:
+            configEntryWidget = PasswordWidget;
             break;
         default:
             configEntryWidget = ConfigEntryWidget;

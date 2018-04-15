@@ -9,7 +9,7 @@ import { NavbarDropdown } from "bloomer/lib/components/Navbar/NavbarDropdown";
 import { Icon } from "bloomer/lib/elements/Icon";
 import { generateConfigCpp, generateConfigH, generateMainCpp } from "../CodeGenerator";
 import { Config } from "../ConfigApi";
-import { exampleNew, exampleTypes, exampleHue } from "../Examples";
+import { exampleNew, exampleTypes, exampleHue, exampleWifiSetup } from "../Examples";
 import { saveAs } from "file-saver";
 import { NavbarBrand } from "bloomer/lib/components/Navbar/NavbarBrand";
 import { NavbarBurger } from "bloomer/lib/components/Navbar/NavbarBurger";
@@ -47,7 +47,8 @@ export const renderNavFile = (onNavSelect: (config: Config) => void) => {
                 {
                     [{ lbl: "New", cfg: exampleNew },
                     { lbl: "Available Types", cfg: exampleTypes },
-                    { lbl: "Hue Example", cfg: exampleHue }
+                    { lbl: "Hue Example", cfg: exampleHue },
+                    { lbl: "Wifi Setup Example", cfg: exampleWifiSetup },
                     ].map(e => <NavbarItem key={e.lbl} onClick={() => onNavSelect(e.cfg as Config)} href="#" > {e.lbl} </NavbarItem>)
                 }
             </NavbarDropdown>

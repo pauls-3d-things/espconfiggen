@@ -31,6 +31,12 @@ export const exampleTypes = {
                     "value": "asdfjklö"
                 },
                 {
+                    "label": "Password",
+                    "help": "This is a password/string type. (char*)",
+                    "type": "P",
+                    "value": "secret"
+                },
+                {
                     "label": "Checkbox",
                     "help": "This is a checkbox type. (bool)",
                     "type": "C",
@@ -91,6 +97,31 @@ export const exampleHue = {
                     "label": "End Color",
                     "type": "H",
                     "value": 42
+                }
+            ]
+        }
+    ]
+};
+
+
+export const exampleWifiSetup = {
+    "version": 0,
+    "title": "Wifi Setup Example",
+    "panels": [
+        {
+            "title": "WiFi Settings",
+            "entries": [
+                {
+                    "label": "SSID",
+                    "help": "The name of the WiFi network",
+                    "type": "S",
+                    "value": "MyWiFi"
+                },
+                {
+                    "label": "Password",
+                    "help": "The password of the Wifi network",
+                    "type": "P",
+                    "value": "secret"
                 }
             ]
         }

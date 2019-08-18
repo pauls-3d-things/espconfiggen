@@ -40,6 +40,7 @@
     "@types/react-dom": "^16.8.5",
     "@types/react-monaco-editor": "^0.10.1",
     "@types/toastr": "^2.1.37",
+    "@types/jquery": "^3.3.31",
     "bloomer": "^0.6.5",
     "bulma": "^0.6.2",
     "copy-webpack-plugin": "^4.6.0",
@@ -65,8 +66,5 @@
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.1",
     "webpack-dev-server": "^3.8.0"
-  },
-  "dependencies": {
-    "@types/jquery": "^3.3.31"
   }
 }

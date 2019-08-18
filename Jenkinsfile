@@ -14,12 +14,12 @@ pipeline {
         }
         stage('undeploy') {
             dir('generator') {
-                sh 'rm -rf /var/www/u8g2sim/*'
+                sh 'rm -rf /var/www/espconfiggen/*'
             }
         }
         stage('deploy') {
             dir('generator') {
-                sh 'cp -R dist/* /var/www/u8g2sim/'
+                sh 'cp -R dist/* /var/www/espconfiggen/'
             }
         }
     }

@@ -74,11 +74,11 @@ export class ConfigGenNavbar extends React.Component<ConfigGenNavbarProps, Confi
 
     socialIcons = (hidden: string) => {
         return ([
+            < NavbarItem key="home" href="https://p3dt.net" target="_blank" className={"is-hidden-" + hidden}>
+                <Icon className="fa fa-home" />
+            </NavbarItem>,
             <NavbarItem key="github" href="https://github.com/uvwxy/espconfiggen" target="_blank" className={"is-hidden-" + hidden}>
                 <Icon className="fa fa-github" />
-            </NavbarItem>,
-            < NavbarItem key="cubes" href="https://thingiverse.com/uvwxy" target="_blank" className={"is-hidden-" + hidden}>
-                <Icon className="fa fa-cubes" />
             </NavbarItem>,
             <NavbarItem key="insta " href="https://www.instagram.com/pauls_3d_things" target="_blank" className={"is-hidden-" + hidden}>
                 <Icon className="fa fa-instagram" />

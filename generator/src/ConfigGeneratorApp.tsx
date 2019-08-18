@@ -98,7 +98,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                     <Select isSize="small"
                                         onChange={(event: React.FormEvent<HTMLInputElement>) => {
                                             this.setState({
-                                                selectedPanel: Number.parseInt(event.currentTarget.value),
+                                                selectedPanel: Number.parseInt(event.currentTarget.value, 10),
                                                 selectedItem: 0
                                             });
                                             console.log("selected panel", event.currentTarget.value);
@@ -117,7 +117,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                         });
                                         this.setState({ selectedPanel: this.state.config.panels.length - 1 });
                                     }}
-                                ><Icon icon="plus" /></Button>
+                                ><Icon className="fa fa-plus" /></Button>
                             </Control>
                         </Field>
 
@@ -201,7 +201,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                             {!currentItem ? undefined :
                                 <Select isSize="small"
                                     onChange={(event: React.FormEvent<HTMLInputElement>) => {
-                                        this.setState({ selectedItem: Number.parseInt(event.currentTarget.value) });
+                                        this.setState({ selectedItem: Number.parseInt(event.currentTarget.value, 10) });
                                         console.log("selected item", event.currentTarget.value);
 
                                     }}>
@@ -220,7 +220,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                         });
                                     this.setState({ selectedItem: this.state.config.panels[this.state.selectedPanel].entries.length - 1 });
                                 }}
-                            ><Icon icon="plus" /></Button>
+                            ><Icon className="fa fa-plus" /></Button>
                         </Control>
                     }
                 </Field>

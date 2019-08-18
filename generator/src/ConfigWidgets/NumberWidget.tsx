@@ -16,7 +16,7 @@ export class NumberWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Conf
     onEntryChange = (entry: ConfigEntry, event: React.FormEvent<HTMLInputElement>) => {
         switch (entry.type) {
             case InputType.INTEGER:
-                entry.value = Number.parseInt(event.currentTarget.value);
+                entry.value = Number.parseInt(event.currentTarget.value, 10);
                 break;
             case InputType.FLOAT:
                 entry.value = Number.parseFloat(event.currentTarget.value);
@@ -34,7 +34,7 @@ export class NumberWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Conf
                     <Input
                         type="number"
                         step={entry.type === InputType.INTEGER ? "1" : "any"}
-                        value={typeof (entry.value) === "number" ? entry.value : Number.parseInt("" + entry.value)
+                        value={typeof (entry.value) === "number" ? entry.value : Number.parseInt("" + entry.value, 10)
                         }
                         onChange={(event: React.FormEvent<HTMLInputElement>) => this.onEntryChange(entry, event)}
                     />

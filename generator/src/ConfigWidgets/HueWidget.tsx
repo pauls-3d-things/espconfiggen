@@ -4,7 +4,7 @@ import { Control } from "bloomer/lib/elements/Form/Control";
 import { Help } from "bloomer/lib/elements/Form/Help";
 import { Field } from "bloomer/lib/elements/Form/Field/Field";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
-import { HuePicker, ColorChangeHandler, ColorResult } from "react-color";
+import { HuePicker, ColorChangeHandler, ColorState } from "react-color";
 import { ConfigEntry } from "../ConfigApi";
 const hslToHex = require("hsl-to-hex");
 
@@ -14,7 +14,7 @@ export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigE
         super(props);
     }
 
-    hueToHex = (entry: ConfigEntry) => {
+    hueToHex = (entry: ConfigEntry): string => {
         let h: number;
         if (typeof (entry.value) === "number") {
             h = entry.value;
@@ -26,7 +26,7 @@ export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigE
         return hslToHex(h, 100, 50);
     }
 
-    onEntryChangeComplete: ColorChangeHandler = (color: ColorResult) => {
+    onEntryChangeComplete: ColorChangeHandler = (color: ColorState) => {
         this.props.entry.value = color.hsl.h;
         this.props.onEntryChanged();
     }

@@ -21,6 +21,18 @@ export const str2InputType = (s: string): InputType => {
     return InputType[s as keyof typeof InputType];
 };
 
+var lookupTable: any;
+export const value2InputType = (v: string): InputType => {
+    // https://www.typescriptlang.org/docs/handbook/enums.html
+    if (!lookupTable) {
+        lookupTable = {};
+        Object.keys(InputType).forEach(e => {
+            lookupTable[InputType[e as keyof typeof InputType]] = e;
+        })
+    }
+    return lookupTable[v];
+}
+
 export enum InputType {
     INTEGER = "I",
     STRING = "S",

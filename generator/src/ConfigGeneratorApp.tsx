@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
-import { Config, ConfigEntry, InputType, str2InputType, getDataFromConfig } from "./ConfigApi";
+import { Config, ConfigEntry, InputType, str2InputType, getDataFromConfig, value2InputType } from "./ConfigApi";
 import * as toastr from "toastr";
 import MonacoEditor from "react-monaco-editor";
 import { generateConfigCpp, generateConfigH, generateMainCpp } from "./CodeGenerator";
@@ -60,7 +60,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         for (let t in InputType) {
             if (isNaN(Number(t))) {
                 options.push(
-                    <option key={"type" + t} value={t} selected={t === currentType}>{t}</option>
+                    <option key={"type" + t} value={t}>{t}</option>
                 );
             }
         }
@@ -94,6 +94,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                             <Form.Control>
                                 {!this.state.config.panels.length ? undefined :
                                     <Form.Select size="small"
+                                        value={this.state.selectedPanel}
                                         onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                                             this.setState({
                                                 selectedPanel: Number.parseInt(event.currentTarget.value, 10),
@@ -103,7 +104,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
 
                                         }}>
                                         {this.state.config
-                                            .panels.map((p, i) => <option value={i} selected={i === this.state.selectedPanel}>{p.title}</option>)}
+                                            .panels.map((p, i) => <option value={i}>{p.title}</option>)}
                                     </Form.Select>
                                 }
                                 <Button
@@ -142,6 +143,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     }
 
     renderItemConfigDetail = (currentItem: ConfigEntry) => {
+        console.log(currentItem);
         return ([
             <Form.Field>
                 <Form.Label size="small">Label:</Form.Label>
@@ -162,6 +164,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                 <Form.Control>
                     <Form.Select
                         size="small"
+                        value={value2InputType(currentItem.type)}
                         onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                             console.log("selected type", event.currentTarget.value);
                             const newType = str2InputType(event.currentTarget.value);
@@ -198,13 +201,14 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                         <Form.Control>
                             {!currentItem ? undefined :
                                 <Form.Select size="small"
+                                    value={this.state.selectedItem}
                                     onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                                         this.setState({ selectedItem: Number.parseInt(event.currentTarget.value, 10) });
                                         console.log("selected item", event.currentTarget.value);
 
                                     }}>
                                     {this.state.config.panels[this.state.selectedPanel]
-                                        .entries.map((e, i) => <option value={i} selected={i === this.state.selectedItem}>{e.label}</option>)}
+                                        .entries.map((e, i) => <option value={i} >{e.label}</option>)}
                                 </Form.Select>}
                             <Button
                                 size="small"

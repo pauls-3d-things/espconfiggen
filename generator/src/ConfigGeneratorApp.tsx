@@ -1,14 +1,12 @@
 import * as React from "react";
+import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
 import { Config, ConfigEntry, InputType, str2InputType, getDataFromConfig } from "./ConfigApi";
-import {
-    Label, Input, Control, Field, Select, Columns, Column, Button, Icon, Container,
-    Card, CardHeader, CardContent, Tabs, TabList, Tab, TabLink, CardHeaderTitle
-} from "bloomer";
 import * as toastr from "toastr";
 import MonacoEditor from "react-monaco-editor";
 import { generateConfigCpp, generateConfigH, generateMainCpp } from "./CodeGenerator";
 import { renderConfigPage } from "./ConfigWidgets/ConfigPage";
 import { ConfigGenNavbar } from "./ConfigGeneratorWidgets/NavBar";
+import { Form, Icon, Tabs, Container, Columns, Card, Button } from "react-bulma-components";
 
 enum SelectedTab {
     PREVIEW,
@@ -25,7 +23,7 @@ interface ConifgGeneratorAppState {
     selectedItem: number;
     selectedTab: SelectedTab;
 
-    jsonEditor: monaco.editor.ICodeEditor | null;
+    jsonEditor: monacoEditor.editor.ICodeEditor | null;
 }
 
 export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppState> {
@@ -62,7 +60,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         for (let t in InputType) {
             if (isNaN(Number(t))) {
                 options.push(
-                    <option key={"type" + t} value={InputType[t]} selected={InputType[t] === currentType}>{t}</option>
+                    <option key={"type" + t} value={t} selected={t === currentType}>{t}</option>
                 );
             }
         }
@@ -72,16 +70,16 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     renderConfigMain(): any {
         return (
             <div>
-                <Field >
-                    <Label isSize="small">Title</Label>
-                    <Control>
-                        <Input isSize="small"
+                <Form.Field >
+                    <Form.Label size="small">Title</Form.Label>
+                    <Form.Control>
+                        <Form.Input size="small"
                             type="text"
                             value={"" + this.state.config.title}
                             onChange={this.updateTitle}
                         />
-                    </Control>
-                </Field>
+                    </Form.Control>
+                </Form.Field>
             </div>
         );
     }
@@ -89,14 +87,14 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     renderConfigPanel = () => {
         return (
             <div>
-                <Label isSize="small">Panel:</Label>
+                <Form.Label size="small">Panel:</Form.Label>
                 {!this.state.config.title ? <p>Please provide a title.</p> :
                     <div>
-                        <Field>
-                            <Control>
+                        <Form.Field>
+                            <Form.Control>
                                 {!this.state.config.panels.length ? undefined :
-                                    <Select isSize="small"
-                                        onChange={(event: React.FormEvent<HTMLInputElement>) => {
+                                    <Form.Select size="small"
+                                        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                                             this.setState({
                                                 selectedPanel: Number.parseInt(event.currentTarget.value, 10),
                                                 selectedItem: 0
@@ -106,10 +104,10 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                         }}>
                                         {this.state.config
                                             .panels.map((p, i) => <option value={i} selected={i === this.state.selectedPanel}>{p.title}</option>)}
-                                    </Select>
+                                    </Form.Select>
                                 }
                                 <Button
-                                    isSize="small"
+                                    size="small"
                                     onClick={() => {
                                         this.state.config.panels.push({
                                             title: "Panel " + (this.state.config.panels.length + 1),
@@ -118,15 +116,15 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                         this.setState({ selectedPanel: this.state.config.panels.length - 1 });
                                     }}
                                 ><Icon className="fa fa-plus" /></Button>
-                            </Control>
-                        </Field>
+                            </Form.Control>
+                        </Form.Field>
 
                         {!this.state.config.panels[this.state.selectedPanel] ? undefined :
-                            <Field>
-                                <Label isSize="small">Title:</Label>
-                                <Control>
-                                    <Input
-                                        isSize="small"
+                            <Form.Field>
+                                <Form.Label size="small">Title:</Form.Label>
+                                <Form.Control>
+                                    <Form.Input
+                                        size="small"
                                         type="text"
                                         onChange={(event: React.FormEvent<HTMLInputElement>) => {
                                             this.state.config.panels[this.state.selectedPanel].title = event.currentTarget.value;
@@ -134,8 +132,8 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                         }}
                                         value={this.state.config.panels[this.state.selectedPanel].title}
                                     />
-                                </Control>
-                            </Field>
+                                </Form.Control>
+                            </Form.Field>
                         }
                     </div>
                 }
@@ -145,11 +143,11 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
 
     renderItemConfigDetail = (currentItem: ConfigEntry) => {
         return ([
-            <Field>
-                <Label isSize="small">Label:</Label>
-                <Control>
-                    <Input
-                        isSize="small"
+            <Form.Field>
+                <Form.Label size="small">Label:</Form.Label>
+                <Form.Control>
+                    <Form.Input
+                        size="small"
                         type="text"
                         onChange={(event: React.FormEvent<HTMLInputElement>) => {
                             currentItem.label = event.currentTarget.value;
@@ -157,14 +155,14 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                         }}
                         value={currentItem.label}
                     />
-                </Control>
-            </Field>,
-            <Field>
-                <Label isSize="small">Type:</Label>
-                <Control>
-                    <Select
-                        isSize="small"
-                        onChange={(event: React.FormEvent<HTMLInputElement>) => {
+                </Form.Control>
+            </Form.Field>,
+            <Form.Field>
+                <Form.Label size="small">Type:</Form.Label>
+                <Form.Control>
+                    <Form.Select
+                        size="small"
+                        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                             console.log("selected type", event.currentTarget.value);
                             const newType = str2InputType(event.currentTarget.value);
                             this.state.config.panels[this.state.selectedPanel]
@@ -172,14 +170,14 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                             this.redraw();
                         }}>
                         {this.renderInputTypeItems(currentItem.type)}
-                    </Select>
-                </Control>
-            </Field>,
-            <Field>
-                <Label isSize="small">Help text:</Label>
-                <Control>
-                    <Input
-                        isSize="small"
+                    </Form.Select>
+                </Form.Control>
+            </Form.Field>,
+            <Form.Field>
+                <Form.Label size="small">Help text:</Form.Label>
+                <Form.Control>
+                    <Form.Input
+                        size="small"
                         type="text"
                         onChange={(event: React.FormEvent<HTMLInputElement>) => {
                             currentItem.help = event.currentTarget.value;
@@ -187,29 +185,29 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                         }} value={this.state.config.panels[this.state.selectedPanel]
                             .entries[this.state.selectedItem].help}
                     />
-                </Control>
-            </Field>
+                </Form.Control>
+            </Form.Field>
         ]);
     }
     renderConfigItem = (currentItem: ConfigEntry): any => {
         return (
             <div>
-                <Field>
-                    <Label isSize="small">Item:</Label>
+                <Form.Field>
+                    <Form.Label size="small">Item:</Form.Label>
                     {this.state.config.panels.length === 0 ? <p>Please add a panel.</p> :
-                        <Control>
+                        <Form.Control>
                             {!currentItem ? undefined :
-                                <Select isSize="small"
-                                    onChange={(event: React.FormEvent<HTMLInputElement>) => {
+                                <Form.Select size="small"
+                                    onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                                         this.setState({ selectedItem: Number.parseInt(event.currentTarget.value, 10) });
                                         console.log("selected item", event.currentTarget.value);
 
                                     }}>
                                     {this.state.config.panels[this.state.selectedPanel]
                                         .entries.map((e, i) => <option value={i} selected={i === this.state.selectedItem}>{e.label}</option>)}
-                                </Select>}
+                                </Form.Select>}
                             <Button
-                                isSize="small"
+                                size="small"
                                 onClick={() => {
                                     this.state.config.panels[this.state.selectedPanel]
                                         .entries.push({
@@ -221,9 +219,9 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                     this.setState({ selectedItem: this.state.config.panels[this.state.selectedPanel].entries.length - 1 });
                                 }}
                             ><Icon className="fa fa-plus" /></Button>
-                        </Control>
+                        </Form.Control>
                     }
-                </Field>
+                </Form.Field>
                 {!currentItem ? undefined : this.renderItemConfigDetail(currentItem)}
             </div>
         );
@@ -231,21 +229,17 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
 
     renderMainTabs = () => {
         return (<Tabs>
-            <TabList>
-                {[
-                    { lbl: "UI", tab: SelectedTab.PREVIEW, ico: "fa fa-eye" },
-                    { lbl: "config.json", tab: SelectedTab.CONFIG_JSON, ico: "fa fa-edit" },
-                    { lbl: "Config.cpp", tab: SelectedTab.CONFIG_CPP, ico: "fa fa-code" },
-                    { lbl: "Config.h", tab: SelectedTab.CONFIG_H, ico: "fa fa-code" },
-                    { lbl: "main.cpp", tab: SelectedTab.MAIN_CPP, ico: "fa fa-code" }
-                ].map(e =>
-                    <Tab isActive={this.state.selectedTab === e.tab} onClick={() => this.setState({ selectedTab: e.tab })}>
-                        <TabLink>
-                            <Icon isSize="small"><span className={e.ico} /></Icon>
-                            <span>{e.lbl}</span>
-                        </TabLink>
-                    </Tab>)}
-            </TabList>
+            {[
+                { lbl: "UI", tab: SelectedTab.PREVIEW, ico: "fa fa-eye" },
+                { lbl: "config.json", tab: SelectedTab.CONFIG_JSON, ico: "fa fa-edit" },
+                { lbl: "Config.cpp", tab: SelectedTab.CONFIG_CPP, ico: "fa fa-code" },
+                { lbl: "Config.h", tab: SelectedTab.CONFIG_H, ico: "fa fa-code" },
+                { lbl: "main.cpp", tab: SelectedTab.MAIN_CPP, ico: "fa fa-code" }
+            ].map(e =>
+                <Tabs.Tab active={this.state.selectedTab === e.tab} onClick={() => this.setState({ selectedTab: e.tab })}>
+                    <Icon size="small"><span className={e.ico} /></Icon>
+                    <span>{e.lbl}</span>
+                </Tabs.Tab>)}
         </Tabs >);
     }
 
@@ -262,9 +256,9 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
 
     renderJson = () => {
         return (
-            <Field>
-                {/* <Label></Label> */}
-                <Control>
+            <Form.Field>
+                {/* <Form.Label></Form.Label> */}
+                <Form.Control>
                     <MonacoEditor
                         width="100%"
                         height="500"
@@ -275,20 +269,20 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                             selectOnLineNumbers: true
                         }}
                         onChange={this.onJsonChange}
-                        editorDidMount={(editor: monaco.editor.ICodeEditor) => {
+                        editorDidMount={(editor: monacoEditor.editor.ICodeEditor) => {
                             editor.focus();
                             this.setState({ jsonEditor: editor });
                         }}
                     />
-                </Control>
-            </Field>
+                </Form.Control>
+            </Form.Field>
         );
     }
 
     renderCpp = () => {
         return (
-            <Field>
-                <Control>
+            <Form.Field>
+                <Form.Control>
                     <MonacoEditor
                         width="100%"
                         height="500"
@@ -300,19 +294,19 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                             selectOnLineNumbers: true
                         }}
                         onChange={undefined}
-                        editorDidMount={(editor: monaco.editor.ICodeEditor) => {
+                        editorDidMount={(editor: monacoEditor.editor.ICodeEditor) => {
                             editor.focus();
                         }}
                     />
-                </Control>
-            </Field>
+                </Form.Control>
+            </Form.Field>
         );
     }
 
     renderMainCpp = () => {
         return (
-            <Field>
-                <Control>
+            <Form.Field>
+                <Form.Control>
                     <MonacoEditor
                         width="100%"
                         height="500"
@@ -324,19 +318,19 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                             selectOnLineNumbers: true
                         }}
                         onChange={undefined}
-                        editorDidMount={(editor: monaco.editor.ICodeEditor) => {
+                        editorDidMount={(editor: monacoEditor.editor.ICodeEditor) => {
                             editor.focus();
                         }}
                     />
-                </Control>
-            </Field>
+                </Form.Control>
+            </Form.Field>
         );
     }
 
     renderH = () => {
         return (
-            <Field>
-                <Control>
+            <Form.Field>
+                <Form.Control>
                     <MonacoEditor
                         width="100%"
                         height="500"
@@ -348,12 +342,12 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                             selectOnLineNumbers: true
                         }}
                         onChange={undefined}
-                        editorDidMount={(editor: monaco.editor.ICodeEditor) => {
+                        editorDidMount={(editor: monacoEditor.editor.ICodeEditor) => {
                             editor.focus();
                         }}
                     />
-                </Control>
-            </Field>
+                </Form.Control>
+            </Form.Field>
         );
     }
 
@@ -371,14 +365,14 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                 <ConfigGenNavbar config={this.state.config} onNavSelect={(config: Config) => this.setState({ config })} />
                 <Container>
                     <Columns>
-                        <Column isSize={2}>
+                        <Columns.Column size={2}>
                             <Card>
-                                <CardHeader>
-                                    <CardHeaderTitle>
+                                <Card.Header>
+                                    <Card.Header.Title>
                                         Edit
-                                   </CardHeaderTitle>
-                                </CardHeader>
-                                <CardContent>
+                                   </Card.Header.Title>
+                                </Card.Header>
+                                <Card.Content>
                                     <div>
                                         {this.renderConfigMain()}
                                         <hr />
@@ -386,23 +380,23 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                         <hr />
                                         {this.renderConfigItem(currentItem)}
                                     </div>
-                                </CardContent>
+                                </Card.Content>
                             </Card>
-                        </Column>
-                        <Column isSize={10}>
+                        </Columns.Column>
+                        <Columns.Column size={10}>
                             <Card>
-                                <CardHeader>
+                                <Card.Header>
                                     {this.renderMainTabs()}
-                                </CardHeader>
-                                <CardContent style={{ overflow: "scroll" }}>
+                                </Card.Header>
+                                <Card.Content style={{ overflow: "scroll" }}>
                                     {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.redraw, true, this.onPreviewSave, true)}
                                     {this.state.selectedTab === SelectedTab.CONFIG_JSON && this.renderJson()}
                                     {this.state.selectedTab === SelectedTab.CONFIG_CPP && this.renderCpp()}
                                     {this.state.selectedTab === SelectedTab.CONFIG_H && this.renderH()}
                                     {this.state.selectedTab === SelectedTab.MAIN_CPP && this.renderMainCpp()}
-                                </CardContent>
+                                </Card.Content>
                             </Card>
-                        </Column>
+                        </Columns.Column>
                     </Columns>
                 </Container>
             </div >

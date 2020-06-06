@@ -1,14 +1,7 @@
 import * as React from "react";
 import { Config, ConfigPanel } from "../ConfigApi";
 import { renderPanel } from "./ConfigPanel";
-import { Section } from "bloomer/lib/layout/Section";
-import { Container } from "bloomer/lib/layout/Container";
-import { Title } from "bloomer/lib/elements/Title";
-import { Column } from "bloomer/lib/grid/Column";
-import { Columns } from "bloomer/lib/grid/Columns";
-import { Field } from "bloomer/lib/elements/Form/Field/Field";
-import { Control } from "bloomer/lib/elements/Form/Control";
-import { Button } from "bloomer/lib/elements/Button";
+import { Section, Container, Heading, Columns, Button, Form } from "react-bulma-components";
 
 export const renderConfigPage = (config: Config,
     onEntryChanged: () => void,
@@ -18,24 +11,24 @@ export const renderConfigPage = (config: Config,
     return (
         <Section>
             <Container>
-                <Title>{config.title || ""} </Title>
+                <Heading>{config.title || ""} </Heading>
                 <div>
                     {config.panels
                         .map((panel: ConfigPanel) => renderPanel(panel, onEntryChanged, isInGeneratorApp))
                         .reduce((rows: any[][], panel: JSX.Element, i: number) => {
                             const chunk = Math.floor(i / 3);
                             rows[chunk] = rows[chunk] || [];
-                            rows[chunk].push(<Column isSize="1/3" key={"p" + i} > {panel} </Column>);
+                            rows[chunk].push(<Columns.Column size="one-third" key={"p" + i} > {panel} </Columns.Column>);
                             return rows;
                         }, [])
                         .map((chunk: JSX.Element[], i) => <Columns key={"col" + i}>{chunk} </Columns>)
                     }
                     {!(config.panels[0] && config.panels[0].entries.length) ? undefined :
-                        <Field isGrouped>
-                            <Control>
-                                <Button isColor="primary" disabled={!saveEnabled} onClick={onSave}>Save</Button>
-                            </Control>
-                        </Field>
+                        <Form.Field>
+                            <Form.Control>
+                                <Button color="primary" disabled={!saveEnabled} onClick={onSave}>Save</Button>
+                            </Form.Control>
+                        </Form.Field>
                     }
                 </div>
 

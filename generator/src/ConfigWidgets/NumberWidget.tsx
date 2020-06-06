@@ -1,11 +1,7 @@
 import * as React from "react";
-import { Label } from "bloomer/lib/elements/Form/Label";
-import { Input } from "bloomer/lib/elements/Form/Input";
-import { Control } from "bloomer/lib/elements/Form/Control";
-import { Help } from "bloomer/lib/elements/Form/Help";
-import { Field } from "bloomer/lib/elements/Form/Field/Field";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
 import { InputType, ConfigEntry } from "../ConfigApi";
+import { Form } from "react-bulma-components";
 
 export class NumberWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigEntryWidgetState> {
 
@@ -28,20 +24,20 @@ export class NumberWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Conf
     render() {
         const entry = this.props.entry;
         return (
-            <Field key={entry.label + "field"}>
-                <Label>{entry.label} </Label>
-                < Control key={entry.label + "ctrl"} >
-                    <Input
+            <Form.Field key={entry.label + "field"}>
+                <Form.Label>{entry.label} </Form.Label>
+                <Form.Control key={entry.label + "ctrl"} >
+                    <Form.Input
                         type="number"
                         step={entry.type === InputType.INTEGER ? "1" : "any"}
-                        value={typeof (entry.value) === "number" ? entry.value : Number.parseInt("" + entry.value, 10)
+                        value={typeof (entry.value) === "number" ? "" + entry.value : "" + Number.parseInt("" + entry.value, 10)
                         }
                         onChange={(event: React.FormEvent<HTMLInputElement>) => this.onEntryChange(entry, event)}
                     />
                     {
-                        entry.help && <Help>{entry.help} </Help>}
-                </Control>
-            </Field>
+                        entry.help && <Form.Help>{entry.help} </Form.Help>}
+                </Form.Control>
+            </Form.Field>
         );
     }
 }

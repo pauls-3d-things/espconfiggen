@@ -1,18 +1,9 @@
 import * as React from "react";
-import { Navbar } from "bloomer/lib/components/Navbar/Navbar";
-import { NavbarMenu } from "bloomer/lib/components/Navbar/NavbarMenu";
-import { NavbarStart } from "bloomer/lib/components/Navbar/NavbarStart";
-import { NavbarItem } from "bloomer/lib/components/Navbar/NavbarItem";
-import { NavbarEnd } from "bloomer/lib/components/Navbar/NavbarEnd";
-import { NavbarLink } from "bloomer/lib/components/Navbar/NavbarLink";
-import { NavbarDropdown } from "bloomer/lib/components/Navbar/NavbarDropdown";
-import { Icon } from "bloomer/lib/elements/Icon";
 import { generateConfigCpp, generateConfigH, generateMainCpp } from "../CodeGenerator";
 import { Config } from "../ConfigApi";
 import { exampleNew, exampleTypes, exampleHue, exampleWifiSetup } from "../Examples";
 import { saveAs } from "file-saver";
-import { NavbarBrand } from "bloomer/lib/components/Navbar/NavbarBrand";
-import { NavbarBurger } from "bloomer/lib/components/Navbar/NavbarBurger";
+import { Navbar, Icon } from "react-bulma-components";
 
 export const saveFile = (content: string, name: string) => {
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
@@ -21,9 +12,9 @@ export const saveFile = (content: string, name: string) => {
 
 export const renderNavDownload = (config: Config) => {
     return (
-        <NavbarItem hasDropdown isHoverable >
-            <NavbarLink href="#" > Download </NavbarLink>
-            < NavbarDropdown >
+        <Navbar.Item dropdown={true} hoverable={true} >
+            <Navbar.Link> Download </Navbar.Link>
+            < Navbar.Dropdown >
                 {
                     [{ lbl: "config.json", fn: () => saveFile(JSON.stringify(config), "config.json"), href: "#" },
                     { lbl: "Config.cpp", fn: () => saveFile(generateConfigCpp(config), "Config.cpp"), href: "#" },
@@ -32,27 +23,27 @@ export const renderNavDownload = (config: Config) => {
                     { lbl: "data.zip", fn: undefined, href: "./data.zip" }
 
                         // { lbl: "data.zip", fn: null }
-                    ].map(e => <NavbarItem key={e.lbl} onClick={e.fn} href={e.href} > {e.lbl} </NavbarItem>)
+                    ].map(e => <Navbar.Item key={e.lbl} onClick={e.fn} > {e.lbl} </Navbar.Item>)
                 }
-            </NavbarDropdown>
-        </NavbarItem>
+            </Navbar.Dropdown>
+        </Navbar.Item>
     );
 };
 
 export const renderNavFile = (onNavSelect: (config: Config) => void) => {
     return (
-        <NavbarItem hasDropdown isHoverable >
-            <NavbarLink href="#" > File </NavbarLink>
-            < NavbarDropdown >
+        <Navbar.Item dropdown={true} hoverable={true} >
+            <Navbar.Link> File </Navbar.Link>
+            < Navbar.Dropdown >
                 {
                     [{ lbl: "New", cfg: exampleNew },
                     { lbl: "Available Types", cfg: exampleTypes },
                     { lbl: "Hue Example", cfg: exampleHue },
                     { lbl: "Wifi Setup Example", cfg: exampleWifiSetup }
-                    ].map(e => <NavbarItem key={e.lbl} onClick={() => onNavSelect(e.cfg as Config)} href="#" > {e.lbl} </NavbarItem>)
+                    ].map(e => <Navbar.Item key={e.lbl} onClick={() => onNavSelect(e.cfg as Config)} > {e.lbl} </Navbar.Item>)
                 }
-            </NavbarDropdown>
-        </NavbarItem >
+            </Navbar.Dropdown>
+        </Navbar.Item >
     );
 };
 
@@ -74,37 +65,37 @@ export class ConfigGenNavbar extends React.Component<ConfigGenNavbarProps, Confi
 
     socialIcons = (hidden: string) => {
         return ([
-            < NavbarItem key="home" href="https://p3dt.net" target="_blank" className={"is-hidden-" + hidden}>
+            <Navbar.Item key="home" onClick={() => window.open("https://p3dt.net", "_blank")} className={"is-hidden-" + hidden}>
                 <Icon className="fa fa-home" />
-            </NavbarItem>,
-            <NavbarItem key="github" href="https://github.com/uvwxy/espconfiggen" target="_blank" className={"is-hidden-" + hidden}>
+            </Navbar.Item>,
+            <Navbar.Item key="github" onClick={() => window.open("https://github.com/uvwxy/espconfiggen", "_blank")} className={"is-hidden-" + hidden}>
                 <Icon className="fa fa-github" />
-            </NavbarItem>,
-            <NavbarItem key="insta " href="https://www.instagram.com/pauls_3d_things" target="_blank" className={"is-hidden-" + hidden}>
+            </Navbar.Item>,
+            <Navbar.Item key="insta " onClick={() => window.open("https://www.instagram.com/pauls_3d_things", "_blank")} className={"is-hidden-" + hidden}>
                 <Icon className="fa fa-instagram" />
-            </NavbarItem>
+            </Navbar.Item>
         ]);
     }
     render() {
         return (
             <Navbar className="espconfiggen_navbar" >
-                <NavbarBrand>
-                    <NavbarItem>
+                <Navbar.Brand>
+                    <Navbar.Item>
                         ESP Config Generator
-                     </NavbarItem>
+                     </Navbar.Item>
                     {this.socialIcons("desktop")}
-                    <NavbarBurger isActive={this.state.isActive} onClick={this.onClickNav} />
-                </NavbarBrand>
-                <NavbarMenu isActive={this.state.isActive}>
-                    <NavbarStart>
-                        {/* <NavbarItem>ESP Config Generator </NavbarItem> */}
+                    <Navbar.Burger  onClick={this.onClickNav} />
+                </Navbar.Brand>
+                <Navbar.Menu>
+                    <Navbar.Menu className="navbar-start">
+                        {/* <Navbar.Item>ESP Config Generator </Navbar.Item> */}
                         {renderNavFile(this.props.onNavSelect)}
                         {renderNavDownload(this.props.config)}
-                    </NavbarStart>
-                    <NavbarEnd>
+                    </Navbar.Menu>
+                    <Navbar.Menu className="navbar-end">
                         {this.socialIcons("touch")}
-                    </NavbarEnd>
-                </NavbarMenu>
+                    </Navbar.Menu>
+                </Navbar.Menu>
             </Navbar>
         );
     }

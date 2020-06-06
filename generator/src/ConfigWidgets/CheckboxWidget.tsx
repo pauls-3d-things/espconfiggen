@@ -1,10 +1,6 @@
 import * as React from "react";
-import { Control } from "bloomer/lib/elements/Form/Control";
-import { Label } from "bloomer/lib/elements/Form/Label";
-import { Checkbox } from "bloomer/lib/elements/Form/Checkbox";
-import { Field } from "bloomer/lib/elements/Form/Field/Field";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
-import { Help } from "bloomer/lib/elements/Form/Help";
+import { Form} from "react-bulma-components";
 
 export class CheckboxWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigEntryWidgetState> {
 
@@ -20,17 +16,17 @@ export class CheckboxWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Co
     render() {
         const entry = this.props.entry;
         return (
-            <Field key={entry.label + "field"}>
-                <Control>
-                    <Label>{entry.label} </Label>
-                    <Checkbox
+            <Form.Field key={entry.label + "field"}>
+                <Form.Control>
+                    <Form.Label>{entry.label} </Form.Label>
+                    <Form.Checkbox
                         checked={entry.value === true}
                         onChange={(event: React.FormEvent<HTMLInputElement>) => this.onEntryChange(entry, event)}
                         value={entry.help}
-                    ><Help>{entry.help}</Help>
-                    </Checkbox>
-                </Control>
-            </Field>
+                    ><Form.Help>{entry.help}</Form.Help>
+                    </Form.Checkbox>
+                </Form.Control>
+            </Form.Field>
         );
     }
 }

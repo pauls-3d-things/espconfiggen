@@ -19,6 +19,10 @@ module.exports = {
                 loaders: ['ts-loader'],
                 exclude: /node_modules/,
                 include: /src/
+            },
+            {
+                test: /\.css$/,
+                use: ["style-loader", "css-loader",],
             }
         ]
     },
@@ -45,11 +49,13 @@ module.exports = {
             tslint: true,
             checkSyntacticErrors: true
         }),
-        new CopyWebpackPlugin([
-            {
-                from: 'node_modules/monaco-editor/min/vs',
-                to: 'vs',
-            }
-        ])
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: 'node_modules/monaco-editor/min/vs',
+                    to: 'vs',
+                }
+            ]
+        })
     ]
 };

@@ -1,26 +1,22 @@
 import { ConfigPanel } from "../ConfigApi";
 import * as React from "react";
-import { Card } from "bloomer/lib/components/Card/Card";
-import { CardHeader } from "bloomer/lib/components/Card/Header/CardHeader";
-import { CardHeaderTitle } from "bloomer/lib/components/Card/Header/CardHeaderTitle";
-import { CardContent } from "bloomer/lib/components/Card/CardContent";
-import { Content } from "bloomer/lib/elements/Content";
 import { renderEntry } from "./ConfigEntry";
+import { Card, Content } from "react-bulma-components";
 
 export const renderPanel = (panel: ConfigPanel, onEntryChanged: () => void, isInGeneratorApp: boolean) => {
     return <Card key={panel.title + "panel"}>
-        <CardHeader>
-            <CardHeaderTitle>
+        <Card.Header>
+            <Card.Header.Title>
                 {panel.title}
-            </CardHeaderTitle>
+            </Card.Header.Title>
             {/* < CardHeaderIcon >
                 <Icon className="fa fa-angle-down" />
             </CardHeaderIcon> */}
-        </CardHeader>
-        <CardContent>
+        </Card.Header>
+        <Card.Content>
             <Content>
                 {panel.entries.map(entry => renderEntry(entry, onEntryChanged, isInGeneratorApp))}
             </Content>
-        </CardContent>
+        </Card.Content>
     </ Card>;
 };

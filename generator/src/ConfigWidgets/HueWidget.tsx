@@ -1,11 +1,8 @@
 import * as React from "react";
-import { Label } from "bloomer/lib/elements/Form/Label";
-import { Control } from "bloomer/lib/elements/Form/Control";
-import { Help } from "bloomer/lib/elements/Form/Help";
-import { Field } from "bloomer/lib/elements/Form/Field/Field";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
-import { HuePicker, ColorChangeHandler, ColorState } from "react-color";
+import { HuePicker, ColorChangeHandler, ColorResult } from "react-color";
 import { ConfigEntry } from "../ConfigApi";
+import { Form } from "react-bulma-components";
 const hslToHex = require("hsl-to-hex");
 
 export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigEntryWidgetState> {
@@ -26,7 +23,7 @@ export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigE
         return hslToHex(h, 100, 50);
     }
 
-    onEntryChangeComplete: ColorChangeHandler = (color: ColorState) => {
+    onEntryChangeComplete: ColorChangeHandler = (color: ColorResult) => {
         this.props.entry.value = color.hsl.h;
         this.props.onEntryChanged();
     }
@@ -34,16 +31,16 @@ export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigE
     render() {
         const entry = this.props.entry;
         return (
-            <Field key={entry.label + "field"}>
-                <Label key={entry.label + "key"}> {entry.label} </Label>
-                <Control key={entry.label + "ctrl"} >
+            <Form.Field key={entry.label + "field"}>
+                <Form.Label key={entry.label + "key"}> {entry.label} </Form.Label>
+                <Form.Control key={entry.label + "ctrl"} >
                     <HuePicker
                         color={this.hueToHex(this.props.entry)}
                         width="100%"
                         onChangeComplete={this.onEntryChangeComplete} />
-                    {entry.help && <Help>{entry.help} </Help>}
-                </Control>
-            </Field>
+                    {entry.help && <Form.Help>{entry.help} </Form.Help>}
+                </Form.Control>
+            </Form.Field>
         );
     }
 }

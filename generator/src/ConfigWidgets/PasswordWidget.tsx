@@ -1,10 +1,6 @@
 import * as React from "react";
-import { Label } from "bloomer/lib/elements/Form/Label";
-import { Control } from "bloomer/lib/elements/Form/Control";
-import { Input } from "bloomer/lib/elements/Form/Input";
-import { Help } from "bloomer/lib/elements/Form/Help";
-import { Field } from "bloomer/lib/elements/Form/Field/Field";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
+import { Form } from "react-bulma-components";
 
 export class PasswordWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigEntryWidgetState> {
 
@@ -20,17 +16,17 @@ export class PasswordWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Co
     render() {
         const entry = this.props.entry;
         return (
-            <Field key={entry.label + "field"}>
-                <Label key={entry.label + "key"}> {entry.label} </Label>
-                <Control key={entry.label + "ctrl"} >
-                    <Input
+            <Form.Field key={entry.label + "field"}>
+                <Form.Label key={entry.label + "key"}> {entry.label} </Form.Label>
+                <Form.Control key={entry.label + "ctrl"} >
+                    <Form.Input
                         type="password"
                         value={"" + entry.value}
                         onChange={(event: React.FormEvent<HTMLInputElement>) => this.onEntryChange(entry, event)}
                     />
-                    {entry.help && <Help>{entry.help} </Help>}
-                </Control>
-            </Field>
+                    {entry.help && <Form.Help>{entry.help} </Form.Help>}
+                </Form.Control>
+            </Form.Field>
         );
     }
 }

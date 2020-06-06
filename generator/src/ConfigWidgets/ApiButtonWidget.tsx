@@ -1,11 +1,6 @@
 import * as React from "react";
-import { Control } from "bloomer/lib/elements/Form/Control";
-import { Field } from "bloomer/lib/elements/Form/Field/Field";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
-import { Help } from "bloomer/lib/elements/Form/Help";
-import { Button } from "bloomer/lib/elements/Button";
-import { Input } from "bloomer/lib/elements/Form/Input";
-import { Label } from "bloomer/lib/elements/Form/Label";
+import { Button, Form} from "react-bulma-components";
 import { ConfigEntry } from "../ConfigApi";
 import * as toastr from "toastr";
 
@@ -55,23 +50,23 @@ export class ApiButtonWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, A
     renderEdits = (entry: ConfigEntry) => {
         return (
             <div key="configDiv">
-                <Label isSize="small">
+                <Form.Label size="small">
                     Button Label:
-                    </Label>
-                <Input
+                    </Form.Label>
+                <Form.Input
                     key="labelInput"
                     type="text"
-                    isSize="small"
+                    size="small"
                     value={"" + entry.label}
                     onChange={this.onLabelChange}
                 />
-                <Label isSize="small">
+                <Form.Label size="small">
                     HTTP GET path:
-                    </Label>
-                <Input
+                    </Form.Label>
+                <Form.Input
                     key="apiInput"
                     type="text"
-                    isSize="small"
+                    size="small"
                     value={"" + entry.value}
                     onChange={this.onValueChange}
                 />
@@ -82,17 +77,17 @@ export class ApiButtonWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, A
     render() {
         const entry = this.props.entry;
         return (
-            <Field width="100%">
-                <Control>
+            <Form.Field style={{width:"100%"}} >
+                <Form.Control>
                     <Button onClick={this.getApi} style={{ width: "100%" }}>
                         {this.state.label}
                     </Button>
-                    {this.state.msg && !this.state.isPreview ? <Help><b>Response: </b>{this.state.msg}</Help> : undefined}
-                    <Help>{entry.help}</Help>
+                    {this.state.msg && !this.state.isPreview ? <Form.Help><b>Response: </b>{this.state.msg}</Form.Help> : undefined}
+                    <Form.Help>{entry.help}</Form.Help>
 
                     {this.props.isInGeneratorApp && this.state.isPreview && this.renderEdits(entry)}
-                </Control>
-            </Field >
+                </Form.Control>
+            </Form.Field >
         );
     }
 }

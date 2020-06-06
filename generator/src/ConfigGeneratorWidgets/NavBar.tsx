@@ -20,7 +20,7 @@ export const renderNavDownload = (config: Config) => {
                     { lbl: "Config.cpp", fn: () => saveFile(generateConfigCpp(config), "Config.cpp"), href: "#" },
                     { lbl: "Config.h", fn: () => saveFile(generateConfigH(config), "Config.h"), href: "#" },
                     { lbl: "main.cpp", fn: () => saveFile(generateMainCpp(config), "main.cpp"), href: "#" },
-                    { lbl: "data.zip", fn: undefined, href: "./data.zip" }
+                    { lbl: "data.zip", fn: () => window.open("./data.zip", "_blank"), href: "./data.zip" }
 
                         // { lbl: "data.zip", fn: null }
                     ].map(e => <Navbar.Item key={e.lbl} onClick={e.fn} > {e.lbl} </Navbar.Item>)

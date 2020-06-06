@@ -1,6 +1,6 @@
 {
   "name": "espconfiggen",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Code generator for ESP8266 web configuration/api and persistance",
   "main": "index.js",
   "scripts": {

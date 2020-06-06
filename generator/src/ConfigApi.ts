@@ -18,7 +18,7 @@ export interface ConfigEntry {
 }
 
 export const str2InputType = (s: string): InputType => {
-    return s as InputType;
+    return InputType[s as keyof typeof InputType];
 };
 
 export enum InputType {

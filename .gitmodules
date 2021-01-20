@@ -1,0 +1,3 @@
+[submodule "example/lib/lib-espconfiggen-server"]
+	path = example/lib/lib-espconfiggen-server
+	url = https://github.com/uvwxy/lib-espconfiggen-server.git

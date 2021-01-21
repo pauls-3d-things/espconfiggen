@@ -30,6 +30,14 @@ export const renderNavDownload = (config: Config) => {
     );
 };
 
+export const renderNavDependency = () => {
+    return (
+        <Navbar.Item key="config-server-library" onClick={() => window.open("https://github.com/pauls-3d-things/lib-espconfiggen-server", "_blank")}>
+            ConfigServer-Library
+        </Navbar.Item>
+    );
+}
+
 export const renderNavFile = (onNavSelect: (config: Config) => void) => {
     return (
         <Navbar.Item dropdown={true} hoverable={true} >
@@ -84,13 +92,14 @@ export class ConfigGenNavbar extends React.Component<ConfigGenNavbarProps, Confi
                         ESP Config Generator
                      </Navbar.Item>
                     {this.socialIcons("desktop")}
-                    <Navbar.Burger  onClick={this.onClickNav} />
+                    <Navbar.Burger onClick={this.onClickNav} />
                 </Navbar.Brand>
                 <Navbar.Menu>
                     <Navbar.Menu className="navbar-start">
                         {/* <Navbar.Item>ESP Config Generator </Navbar.Item> */}
                         {renderNavFile(this.props.onNavSelect)}
                         {renderNavDownload(this.props.config)}
+                        {renderNavDependency()}
                     </Navbar.Menu>
                     <Navbar.Menu className="navbar-end">
                         {this.socialIcons("touch")}

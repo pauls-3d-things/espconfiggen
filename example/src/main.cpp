@@ -5,10 +5,12 @@
 #include <ConfigServer.h>
 #include <ESP8266WebServer.h>
 #include <FS.h>
+#include "mini-wifi.h"
 
 ESP8266WebServer server(80);
 ConfigServer cfgServer;
 Config cfg;
+MiniWifi wifi("clientName", "<your-ssid>", "<your-password>");
 
 void setup() {
   Serial.begin(9600);
@@ -24,6 +26,10 @@ void setup() {
 
   // define WIFI_SSID,WIFI_PASS in defines.h, then add to .gitignore
   cfgServer.joinWifi(WIFI_SSID, WIFI_PASS, cfg, server, EEPROM);
+
+  // setup the config server
+  setupConfigServer(server, cfg, EEPROM);
+  server.begin();
 }
 
 uint8_t c = 0;

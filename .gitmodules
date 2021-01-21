@@ -1,3 +1,6 @@
 [submodule "example/lib/lib-espconfiggen-server"]
 	path = example/lib/lib-espconfiggen-server
-	url = https://github.com/uvwxy/lib-espconfiggen-server.git
+	url = https://github.com/pauls-3d-things/lib-espconfiggen-server.git
+[submodule "example/lib/mini-wifi"]
+	path = example/lib/mini-wifi
+	url = https://github.com/pauls-3d-things/mini-wifi.git

@@ -3,7 +3,7 @@ import { ConfigEntry, InputType } from "../ConfigApi";
 import { CheckboxWidget } from "./CheckboxWidget";
 import { InputWidget } from "./InputWidget";
 import { ConfigEntryWidget } from "./ConfigEntryWidget";
-import { HueWidget } from "./HueWidget";
+import { RGBWidget } from "./HueWidget";
 import { NumberWidget } from "./NumberWidget";
 import { ApiButtonWidget } from "./ApiButtonWidget";
 import { PasswordWidget } from "./PasswordWidget";
@@ -23,7 +23,7 @@ export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void, isIn
             configEntryWidget = CheckboxWidget;
             break;
         case InputType.HUE:
-            configEntryWidget = HueWidget;
+            configEntryWidget = RGBWidget;
             break;
         case InputType.APIBUTTON:
             configEntryWidget = ApiButtonWidget;

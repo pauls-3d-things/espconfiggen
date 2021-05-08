@@ -251,7 +251,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                     { lbl: "Config.cpp", tab: SelectedTab.CONFIG_CPP, ico: "fa fa-code" },
                     { lbl: "Config.h", tab: SelectedTab.CONFIG_H, ico: "fa fa-code" },
                     { lbl: "main.cpp", tab: SelectedTab.MAIN_CPP, ico: "fa fa-code" }
-                ].map(e => <li className={this.state.selectedTab === e.tab ? "is-active" : ""}
+                ].map(e => <li key={e.lbl} className={this.state.selectedTab === e.tab ? "is-active" : ""}
                     onClick={() => this.setState({ selectedTab: e.tab })}>
                     <a> <Icon isSmall><span className={e.ico} /></Icon>
                         <span>{e.lbl}</span></a>

@@ -4,8 +4,7 @@ import { Config } from "../ConfigApi";
 import { exampleNew, exampleTypes, exampleHue, exampleWifiSetup } from "../Examples";
 import { saveAs } from "file-saver";
 import { Navbar } from "trunx/component/Navbar"
-import { Icon } from "trunx/component/Icon"
-
+import { Icon } from "trunx/component/Icon";
 export const saveFile = (content: string, name: string) => {
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     saveAs(blob, name);
@@ -13,7 +12,7 @@ export const saveFile = (content: string, name: string) => {
 
 export const renderNavDownload = (config: Config) => {
     return (
-        <Navbar.Item isHoverable={true} >
+        <Navbar.Item isHoverable={true} hasDropdown>
             <Navbar.Link> Download </Navbar.Link>
             < Navbar.Dropdown >
                 {
@@ -41,7 +40,7 @@ export const renderNavDependency = () => {
 
 export const renderNavFile = (onNavSelect: (config: Config) => void) => {
     return (
-        <Navbar.Item isHoverable={true} >
+        <Navbar.Item isHoverable={true} hasDropdown >
             <Navbar.Link> File </Navbar.Link>
             < Navbar.Dropdown >
                 {
@@ -87,7 +86,7 @@ export class ConfigGenNavbar extends React.Component<ConfigGenNavbarProps, Confi
     }
     render() {
         return (
-            <Navbar className="espconfiggen_navbar" >
+            <Navbar className="espconfiggen_navbar">
                 <Navbar.Brand>
                     <Navbar.Item>
                         ESP Config Generator
@@ -95,8 +94,8 @@ export class ConfigGenNavbar extends React.Component<ConfigGenNavbarProps, Confi
                     {this.socialIcons("desktop")}
                     <Navbar.Burger onClick={this.onClickNav} />
                 </Navbar.Brand>
-                <Navbar.Menu>
-                    <Navbar.Menu className="navbar-start">
+                <Navbar.Menu >
+                    <Navbar.Menu className="navbar-start" >
                         {/* <Navbar.Item>ESP Config Generator </Navbar.Item> */}
                         {renderNavFile(this.props.onNavSelect)}
                         {renderNavDownload(this.props.config)}

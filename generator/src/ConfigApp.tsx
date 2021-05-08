@@ -27,6 +27,7 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
         const fetchData = () => fetch("/data.json", { method: "GET" })
             .then(resp => resp.json())
             .then(data => {
+                // TODO: detect flattened list of data and recreate maps of maps
                 if (!data.error) {
                     applyDataToConfig(this.state.config, data);
                     this.setState({ lastChange: Date.now() }); // trigger redraw of loaded data
@@ -38,6 +39,7 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
         fetch("./config.json")
             .then(resp => resp.json())
             .then(config => {
+                // TODO: in case of a single list recreate the map using section labels^
                 if (!config.error) {
                     this.setState({ config }); // display initial screen with defaults
                 } else {

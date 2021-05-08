@@ -51,11 +51,11 @@ export const generateMainCpp = (config: Config): string => {
     code.push("#include <Arduino.h>");
     code.push("#include <ArduinoJson.h>");
     code.push("#include <ConfigServer.h>");
+    code.push("#include <EEPROM.h>");
     code.push("#include <ESP8266WebServer.h>");
     code.push("#include <FS.h>");
     code.push("");
     code.push("ESP8266WebServer server(80);");
-    code.push("ConfigServer cfgServer;");
     code.push("Config cfg;");
     code.push("");
     code.push("void setup() {");
@@ -68,8 +68,9 @@ export const generateMainCpp = (config: Config): string => {
     config.panels.forEach((panel: ConfigPanel) => appendPanel(code, panel, mainApiGenerator, e => e.type === InputType.APIBUTTON));
 
     code.push("");
-    code.push("  // define WIFI_SSID,WIFI_PASS in defines.h, then add to .gitignore");
-    code.push("  cfgServer.joinWifi(WIFI_SSID, WIFI_PASS, cfg, server, EEPROM);");
+    code.push("// setup the config server");
+    code.push("setupConfigServer(server, cfg, EEPROM);");
+    code.push("server.begin();");
 
     code.push("}");
     code.push("");

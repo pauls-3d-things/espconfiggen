@@ -1,10 +1,12 @@
-#include "Config.h"
-#include "defines.h"
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ConfigServer.h>
+#include <EEPROM.h>
 #include <ESP8266WebServer.h>
 #include <FS.h>
+
+#include "Config.h"
+#include "defines.h"
 #include "mini-wifi.h"
 
 ESP8266WebServer server(80);
@@ -20,12 +22,10 @@ void setup() {
   // implement your api actions here
   // UI Button: Toggle LED
   // Help text: This is an ApiButton type, it will HTTP GET the configured URL
-  server.on("/api/led/1/toggle", HTTP_GET, [&]() {
-    server.send(200, "application/json", "{\"msg\":\"OK\"}");
-  });
+  server.on("/api/led/1/toggle", HTTP_GET, [&]() { server.send(200, "application/json", "{\"msg\":\"OK\"}"); });
 
   // define WIFI_SSID,WIFI_PASS in defines.h, then add to .gitignore
-  cfgServer.joinWifi(WIFI_SSID, WIFI_PASS, cfg, server, EEPROM);
+  wifi.joinWifi();
 
   // setup the config server
   setupConfigServer(server, cfg, EEPROM);
@@ -34,6 +34,7 @@ void setup() {
 
 uint8_t c = 0;
 void loop(void) {
+  wifi.checkWifi();
   server.handleClient();
 
   // Get the config object
@@ -49,13 +50,12 @@ void loop(void) {
     Serial.println(basicTypesInteger);
     float basicTypesFloat = cfg.getBasicTypesFloat(root);
     Serial.println(basicTypesFloat);
-    const char* basicTypesString = cfg.getBasicTypesString(root);
+    const char *basicTypesString = cfg.getBasicTypesString(root);
     Serial.println(basicTypesString);
     bool basicTypesCheckbox = cfg.getBasicTypesCheckbox(root);
     Serial.println(basicTypesCheckbox);
     float extendedTypesHue = cfg.getExtendedTypesHue(root);
     Serial.println(extendedTypesHue);
-
   } else if (cfg.getConfigVersion(EEPROM) != cfg.getId()) {
     Serial.println("NO CONFIG");
   }

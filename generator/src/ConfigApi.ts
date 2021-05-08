@@ -37,7 +37,7 @@ export enum InputType {
     INTEGER = "I",
     STRING = "S",
     CHECKBOX = "C",
-    HUE = "H",
+    RGB = "R",
     FLOAT = "F",
     APIBUTTON = "A",
     PASSWORD = "P"
@@ -45,6 +45,7 @@ export enum InputType {
 
 export const toCppType = (t: InputType) => {
     switch (t) {
+        case InputType.RGB:
         case InputType.INTEGER:
             return "uint32_t";
         case InputType.STRING:
@@ -52,7 +53,6 @@ export const toCppType = (t: InputType) => {
             return "const char*";
         case InputType.CHECKBOX:
             return "bool";
-        case InputType.HUE:
         case InputType.FLOAT:
             return "float";
     }

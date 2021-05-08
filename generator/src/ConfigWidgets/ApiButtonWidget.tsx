@@ -30,14 +30,14 @@ export class ApiButtonWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, A
         this.setState({ label: event.currentTarget.value });
     }
 
-    componentWillReceiveProps(nextProps: ConfigEntryWidgetProps) {
-        this.setState({ label: nextProps.entry.label });
-    }
+    // componentWillReceiveProps(nextProps: ConfigEntryWidgetProps) {
+    //     this.setState({ label: nextProps.entry.label });
+    // }
 
     getApi = () => {
         if (this.props.isInGeneratorApp) {
             if (this.state.isPreview) {
-                console.log("Should HTTP GET \"" + this.props.entry.value + "\""); // TODO: notify
+                (window as any).setInfoMessage("Should HTTP GET \"" + this.props.entry.value + "\"");
             }
             this.setState({ msg: "json.msg will be printed here", isPreview: !this.state.isPreview });
         } else {

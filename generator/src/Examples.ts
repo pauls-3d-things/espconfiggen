@@ -50,7 +50,7 @@ export const exampleTypes = {
                 {
                     "label": "Hue",
                     "help": "This is a Hue type.",
-                    "type": "H",
+                    "type": "R",
                     "value": 42
                 },
                 {
@@ -90,12 +90,12 @@ export const exampleHue = {
             "entries": [
                 {
                     "label": "Start Color",
-                    "type": "H",
+                    "type": "R",
                     "value": 132
                 },
                 {
                     "label": "End Color",
-                    "type": "H",
+                    "type": "R",
                     "value": 42
                 }
             ]

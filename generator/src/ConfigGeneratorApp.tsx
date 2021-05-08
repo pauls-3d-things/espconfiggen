@@ -35,6 +35,7 @@ interface ConifgGeneratorAppState {
     selectedTab: SelectedTab;
 
     jsonEditor: monacoEditor.editor.ICodeEditor | null;
+    info?: string;
 }
 
 export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppState> {
@@ -52,8 +53,10 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
             selectedItem: 0,
             selectedTab: SelectedTab.PREVIEW,
 
-            jsonEditor: null
+            jsonEditor: null,
+            info: ""
         };
+        (window as any).setInfoMessage = (info: string) => this.setState({ info });
     }
     redraw = () => {
         this.setState({ lastChange: Date.now() });
@@ -373,10 +376,13 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     onPreviewSave = () => {
         const data = getDataFromConfig(this.state.config);
         console.log(data);
-        console.log("Saved.", "This was just simulated."); // TODO: notify
+        (window as any).setInfoMessage("Saved.", "This was just simulated.");
     }
 
     render() {
+        if (this.state.info) {
+            setTimeout(() => this.setState({ info: "" }), 10 * 1000);
+        }
         const currentItem = this.state.config.panels[this.state.selectedPanel]
             && this.state.config.panels[this.state.selectedPanel].entries[this.state.selectedItem];
         return (
@@ -408,7 +414,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                     {this.renderMainTabs()}
                                 </Card.Header>
                                 <Card.Content style={{ overflow: "scroll" }}>
-                                    {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.redraw, true, this.onPreviewSave, true)}
+                                    {this.state.selectedTab === SelectedTab.PREVIEW && renderConfigPage(this.state.config, this.redraw, true, this.onPreviewSave, true, this.state.info)}
                                     {this.state.selectedTab === SelectedTab.CONFIG_JSON && this.renderJson()}
                                     {this.state.selectedTab === SelectedTab.CONFIG_CPP && this.renderCpp()}
                                     {this.state.selectedTab === SelectedTab.CONFIG_H && this.renderH()}

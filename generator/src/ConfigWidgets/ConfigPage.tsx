@@ -9,12 +9,13 @@ import { Column } from "trunx/component/Column"
 import { Button } from "trunx/component/Button"
 import { Field } from "trunx/component/Field"
 import { Control } from "trunx/component/Control"
+import { Message } from "trunx/component/Message"
 
 export const renderConfigPage = (config: Config,
     onEntryChanged: () => void,
     saveEnabled: boolean,
     onSave: () => void,
-    isInGeneratorApp: boolean) => {
+    isInGeneratorApp: boolean, info?: string) => {
     return (
         <Section>
             <Container>
@@ -38,8 +39,18 @@ export const renderConfigPage = (config: Config,
                         </Field>
                     }
                 </div>
-
             </Container>
+
+            {info ?
+                <Message style={{
+                    right: "12px", top: "42px", position: "fixed"
+                }}>
+                    <Message.Body>
+                        {info}
+                    </Message.Body>
+                </Message>
+                : undefined
+            }
         </Section >
     );
 };

@@ -22,7 +22,7 @@ export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void, isIn
         case InputType.CHECKBOX:
             configEntryWidget = CheckboxWidget;
             break;
-        case InputType.HUE:
+        case InputType.RGB:
             configEntryWidget = RGBWidget;
             break;
         case InputType.APIBUTTON:

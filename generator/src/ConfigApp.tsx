@@ -6,6 +6,7 @@ interface ConfigAppState {
     config: Config;
     lastChange: number;
     saveEnabled: boolean;
+    info?: string;
 }
 
 export class ConfigApp extends React.Component<{}, ConfigAppState> {
@@ -18,8 +19,10 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
                 panels: []
             },
             lastChange: Date.now(),
-            saveEnabled: true
+            saveEnabled: true,
+            info: ""
         };
+        (window as any).setInfoMessage = (info: string) => this.setState({ info });
     }
 
     componentDidMount() {
@@ -65,18 +68,21 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
         }).then(resp => resp.json()).then((json: any) => {
             this.setState({ saveEnabled: true });
             if (json.success) {
-                console.log("Saved."); // TODO: notify
+                (window as any).setInfoMessage("Saved.");
             } else {
-                console.log("Error", json.error); // TODO: notify
+                (window as any).setInfoMessage("Error: " + json.error);
             }
         }).catch(e => {
-            console.log("Error", e); // TODO: notify
+            (window as any).setInfoMessage("Error: " + e);
             this.setState({ saveEnabled: true });
         });
     }
 
     render() {
-        return renderConfigPage(this.state.config, this.redraw, this.state.saveEnabled, this.onSave, false);
+        if (this.state.info) {
+            setTimeout(() => this.setState({ info: "" }), 10 * 1000);
+        }
+        return renderConfigPage(this.state.config, this.redraw, this.state.saveEnabled, this.onSave, false, this.state.info);
     }
 
 }

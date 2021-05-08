@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as monacoEditor from 'monaco-editor/esm/vs/editor/editor.api';
 import { Config, ConfigEntry, InputType, str2InputType, getDataFromConfig, value2InputType } from "./ConfigApi";
-import * as toastr from "toastr";
 import MonacoEditor from "react-monaco-editor";
 import { generateConfigCpp, generateConfigH, generateMainCpp } from "./CodeGenerator";
 import { renderConfigPage } from "./ConfigWidgets/ConfigPage";
@@ -100,7 +99,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
         return (
             <div>
                 <Label isSmall>Panel:</Label>
-                {!this.state.config.title ? <p>Please provide a title.</p> :
+                {!this.state.config.title ? <p style={{ fontSize: "small" }} >Please provide a title.</p> :
                     <div>
                         <Field>
                             <Control>
@@ -245,19 +244,21 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
 
     renderMainTabs = () => {
         return (<Tabs>
-            {[
-                { lbl: "UI", tab: SelectedTab.PREVIEW, ico: "fa fa-eye" },
-                { lbl: "config.json", tab: SelectedTab.CONFIG_JSON, ico: "fa fa-edit" },
-                { lbl: "Config.cpp", tab: SelectedTab.CONFIG_CPP, ico: "fa fa-code" },
-                { lbl: "Config.h", tab: SelectedTab.CONFIG_H, ico: "fa fa-code" },
-                { lbl: "main.cpp", tab: SelectedTab.MAIN_CPP, ico: "fa fa-code" }
-            ].map(e => <div></div>
-                // <Tab active={this.state.selectedTab === e.tab} onClick={() => this.setState({ selectedTab: e.tab })}>
-                //     <Icon isSmall><span className={e.ico} /></Icon>
-                //     <span>{e.lbl}</span>
-                // </Tab>
-            )
-            }
+            <ul>
+                {[
+                    { lbl: "UI", tab: SelectedTab.PREVIEW, ico: "fa fa-eye" },
+                    { lbl: "config.json", tab: SelectedTab.CONFIG_JSON, ico: "fa fa-edit" },
+                    { lbl: "Config.cpp", tab: SelectedTab.CONFIG_CPP, ico: "fa fa-code" },
+                    { lbl: "Config.h", tab: SelectedTab.CONFIG_H, ico: "fa fa-code" },
+                    { lbl: "main.cpp", tab: SelectedTab.MAIN_CPP, ico: "fa fa-code" }
+                ].map(e => <li className={this.state.selectedTab === e.tab ? "is-active" : ""}
+                    onClick={() => this.setState({ selectedTab: e.tab })}>
+                    <a> <Icon isSmall><span className={e.ico} /></Icon>
+                        <span>{e.lbl}</span></a>
+                </li>
+                )
+                }
+            </ul>
         </Tabs >);
     }
 
@@ -372,7 +373,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
     onPreviewSave = () => {
         const data = getDataFromConfig(this.state.config);
         console.log(data);
-        toastr.success("Saved.", "This was just simulated.");
+        console.log("Saved.", "This was just simulated."); // TODO: notify
     }
 
     render() {
@@ -383,7 +384,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                 <ConfigGenNavbar config={this.state.config} onNavSelect={(config: Config) => this.setState({ config })} />
                 <Container>
                     <Columns>
-                        <Column isSize2>
+                        <Column is2>
                             <Card>
                                 <Card.Header>
                                     <Card.Header.Title>
@@ -401,7 +402,7 @@ export class ConifgGeneratorApp extends React.Component<{}, ConifgGeneratorAppSt
                                 </Card.Content>
                             </Card>
                         </Column>
-                        <Column isSize7>
+                        <Column is8>
                             <Card>
                                 <Card.Header>
                                     {this.renderMainTabs()}

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
 import { ConfigEntry } from "../ConfigApi";
-import * as toastr from "toastr";
 import { Button } from "trunx/component/Button"
 import { Input } from "trunx/component/Input"
 import { Label } from "trunx/component/Label"
@@ -38,7 +37,7 @@ export class ApiButtonWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, A
     getApi = () => {
         if (this.props.isInGeneratorApp) {
             if (this.state.isPreview) {
-                toastr.info("Should HTTP GET \"" + this.props.entry.value + "\"");
+                console.log("Should HTTP GET \"" + this.props.entry.value + "\""); // TODO: notify
             }
             this.setState({ msg: "json.msg will be printed here", isPreview: !this.state.isPreview });
         } else {

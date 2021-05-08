@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Config, getDataFromConfig, applyDataToConfig } from "./ConfigApi";
-import * as toastr from "toastr";
 import { renderConfigPage } from "./ConfigWidgets/ConfigPage";
 
 interface ConfigAppState {
@@ -48,7 +47,7 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
             })
             .then(fetchData)
             .catch((e) => {
-                toastr.error("Error loading config", e);
+                console.log("Error loading config", e);
             });
     }
 
@@ -66,12 +65,12 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
         }).then(resp => resp.json()).then((json: any) => {
             this.setState({ saveEnabled: true });
             if (json.success) {
-                toastr.success("Saved.");
+                console.log("Saved."); // TODO: notify
             } else {
-                toastr.error("Error", json.error);
+                console.log("Error", json.error); // TODO: notify
             }
         }).catch(e => {
-            toastr.error("Error", e);
+            console.log("Error", e); // TODO: notify
             this.setState({ saveEnabled: true });
         });
     }

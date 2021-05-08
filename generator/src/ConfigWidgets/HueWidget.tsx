@@ -1,12 +1,12 @@
 import * as React from "react";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
-import { HuePicker, ColorChangeHandler, ColorResult } from "react-color";
 import { ConfigEntry } from "../ConfigApi";
 const hslToHex = require("hsl-to-hex");
 import { Label } from "trunx/component/Label"
 import { Field } from "trunx/component/Field";
 import { Control } from "trunx/component/Control";
 import { Help } from "trunx/component/Help";
+import { Input } from "trunx/component/Input";
 
 export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigEntryWidgetState> {
 
@@ -26,22 +26,23 @@ export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigE
         return hslToHex(h, 100, 50);
     }
 
-    onEntryChangeComplete: ColorChangeHandler = (color: ColorResult) => {
-        this.props.entry.value = color.hsl.h;
+    onEntryChange = (entry: any, event: React.FormEvent<HTMLInputElement>) => {
+        entry.value = event.currentTarget.value;
         this.props.onEntryChanged();
     }
-
     render() {
         const entry = this.props.entry;
         return (
             <Field key={entry.label + "field"}>
                 <Label key={entry.label + "key"}> {entry.label} </Label>
                 <Control key={entry.label + "ctrl"} >
-                    <HuePicker
-                        color={this.hueToHex(this.props.entry)}
-                        width="100%"
-                        onChangeComplete={this.onEntryChangeComplete} />
-                    {entry.help && <Help>{entry.help} </Help>}
+                    <Input
+                        type="number"
+                        min="0"
+                        max="360"
+                        value={"" + entry.value}
+                        onChange={(event: React.FormEvent<HTMLInputElement>) => this.onEntryChange(entry, event)}
+                    />                    {entry.help && <Help>{entry.help} </Help>}
                 </Control>
             </Field>
         );

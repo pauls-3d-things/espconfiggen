@@ -2,8 +2,11 @@ import * as React from "react";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
 import { HuePicker, ColorChangeHandler, ColorResult } from "react-color";
 import { ConfigEntry } from "../ConfigApi";
-import { Form } from "react-bulma-components";
 const hslToHex = require("hsl-to-hex");
+import { Label } from "trunx/component/Label"
+import { Field } from "trunx/component/Field";
+import { Control } from "trunx/component/Control";
+import { Help } from "trunx/component/Help";
 
 export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigEntryWidgetState> {
 
@@ -31,16 +34,16 @@ export class HueWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigE
     render() {
         const entry = this.props.entry;
         return (
-            <Form.Field key={entry.label + "field"}>
-                <Form.Label key={entry.label + "key"}> {entry.label} </Form.Label>
-                <Form.Control key={entry.label + "ctrl"} >
+            <Field key={entry.label + "field"}>
+                <Label key={entry.label + "key"}> {entry.label} </Label>
+                <Control key={entry.label + "ctrl"} >
                     <HuePicker
                         color={this.hueToHex(this.props.entry)}
                         width="100%"
                         onChangeComplete={this.onEntryChangeComplete} />
-                    {entry.help && <Form.Help>{entry.help} </Form.Help>}
-                </Form.Control>
-            </Form.Field>
+                    {entry.help && <Help>{entry.help} </Help>}
+                </Control>
+            </Field>
         );
     }
 }

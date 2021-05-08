@@ -1,6 +1,10 @@
 import * as React from "react";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
-import { Form } from "react-bulma-components";
+import { Input } from "trunx/component/Input"
+import { Label } from "trunx/component/Label"
+import { Field } from "trunx/component/Field";
+import { Control } from "trunx/component/Control";
+import { Help } from "trunx/component/Help";
 
 export class InputWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigEntryWidgetState> {
 
@@ -16,17 +20,17 @@ export class InputWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Confi
     render() {
         const entry = this.props.entry;
         return (
-            <Form.Field key={entry.label + "field"}>
-                <Form.Label key={entry.label + "key"}> {entry.label} </Form.Label>
-                <Form.Control key={entry.label + "ctrl"} >
-                    <Form.Input
+            <Field key={entry.label + "field"}>
+                <Label key={entry.label + "key"}> {entry.label} </Label>
+                <Control key={entry.label + "ctrl"} >
+                    <Input
                         type="text"
                         value={"" + entry.value}
                         onChange={(event: React.FormEvent<HTMLInputElement>) => this.onEntryChange(entry, event)}
                     />
-                    {entry.help && <Form.Help>{entry.help} </Form.Help>}
-                </Form.Control>
-            </Form.Field>
+                    {entry.help && <Help>{entry.help} </Help>}
+                </Control>
+            </Field>
         );
     }
 }

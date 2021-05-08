@@ -1,8 +1,11 @@
 import * as React from "react";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
 import { InputType, ConfigEntry } from "../ConfigApi";
-import { Form } from "react-bulma-components";
-
+import { Input } from "trunx/component/Input"
+import { Label } from "trunx/component/Label"
+import { Field } from "trunx/component/Field";
+import { Control } from "trunx/component/Control";
+import { Help } from "trunx/component/Help";
 export class NumberWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigEntryWidgetState> {
 
     constructor(props: ConfigEntryWidgetProps) {
@@ -24,10 +27,10 @@ export class NumberWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Conf
     render() {
         const entry = this.props.entry;
         return (
-            <Form.Field key={entry.label + "field"}>
-                <Form.Label>{entry.label} </Form.Label>
-                <Form.Control key={entry.label + "ctrl"} >
-                    <Form.Input
+            <Field key={entry.label + "field"}>
+                <Label>{entry.label} </Label>
+                <Control key={entry.label + "ctrl"} >
+                    <Input
                         type="number"
                         step={entry.type === InputType.INTEGER ? "1" : "any"}
                         value={typeof (entry.value) === "number" ? "" + entry.value : "" + Number.parseInt("" + entry.value, 10)
@@ -35,9 +38,9 @@ export class NumberWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Conf
                         onChange={(event: React.FormEvent<HTMLInputElement>) => this.onEntryChange(entry, event)}
                     />
                     {
-                        entry.help && <Form.Help>{entry.help} </Form.Help>}
-                </Form.Control>
-            </Form.Field>
+                        entry.help && <Help>{entry.help} </Help>}
+                </Control>
+            </Field>
         );
     }
 }

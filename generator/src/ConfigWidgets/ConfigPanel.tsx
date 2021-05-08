@@ -1,7 +1,8 @@
 import { ConfigPanel } from "../ConfigApi";
 import * as React from "react";
 import { renderEntry } from "./ConfigEntry";
-import { Card, Content } from "react-bulma-components";
+import { Card } from "trunx/component/Card";
+import { Content } from "trunx/component/Content";
 
 export const renderPanel = (panel: ConfigPanel, onEntryChanged: () => void, isInGeneratorApp: boolean) => {
     return <Card key={panel.title + "panel"}>

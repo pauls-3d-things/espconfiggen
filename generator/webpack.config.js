@@ -2,13 +2,14 @@ var path = require('path');
 const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 var entries = {};
 
 if (process.env.NODE_ENV == "production") {
     entries.configApp = ["./src/IndexConfigApp.tsx"];
 }
-entries.generatorApp = ["./src/IndexGeneratorApp.tsx"];
+// entries.generatorApp = ["./src/IndexGeneratorApp.tsx"];
 
 module.exports = {
     entry: entries,
@@ -56,6 +57,7 @@ module.exports = {
                     to: 'vs',
                 }
             ]
-        })
+        }),
+        new BundleAnalyzerPlugin()
     ]
 };

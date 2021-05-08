@@ -1,7 +1,14 @@
 import * as React from "react";
 import { Config, ConfigPanel } from "../ConfigApi";
 import { renderPanel } from "./ConfigPanel";
-import { Section, Container, Heading, Columns, Button, Form } from "react-bulma-components";
+import { Section } from "trunx/component/Section"
+import { Container } from "trunx/component/Container"
+import { Heading } from "trunx/component/Heading"
+import { Columns } from "trunx/component/Columns"
+import { Column } from "trunx/component/Column"
+import { Button } from "trunx/component/Button"
+import { Field } from "trunx/component/Field"
+import { Control } from "trunx/component/Control"
 
 export const renderConfigPage = (config: Config,
     onEntryChanged: () => void,
@@ -18,17 +25,17 @@ export const renderConfigPage = (config: Config,
                         .reduce((rows: any[][], panel: JSX.Element, i: number) => {
                             const chunk = Math.floor(i / 3);
                             rows[chunk] = rows[chunk] || [];
-                            rows[chunk].push(<Columns.Column size="one-third" key={"p" + i} > {panel} </Columns.Column>);
+                            rows[chunk].push(<Column isOneThird key={"p" + i} > {panel} </Column>);
                             return rows;
                         }, [])
                         .map((chunk: JSX.Element[], i) => <Columns key={"col" + i}>{chunk} </Columns>)
                     }
                     {!(config.panels[0] && config.panels[0].entries.length) ? undefined :
-                        <Form.Field>
-                            <Form.Control>
+                        <Field>
+                            <Control>
                                 <Button color="primary" disabled={!saveEnabled} onClick={onSave}>Save</Button>
-                            </Form.Control>
-                        </Form.Field>
+                            </Control>
+                        </Field>
                     }
                 </div>
 

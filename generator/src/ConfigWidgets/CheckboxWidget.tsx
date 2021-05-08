@@ -1,6 +1,10 @@
 import * as React from "react";
 import { ConfigEntryWidget, ConfigEntryWidgetProps, ConfigEntryWidgetState } from "./ConfigEntryWidget";
-import { Form} from "react-bulma-components";
+import { Checkbox } from "trunx/component/Checkbox"
+import { Label } from "trunx/component/Label"
+import { Field } from "trunx/component/Field";
+import { Control } from "trunx/component/Control";
+import { Help } from "trunx/component/Help";
 
 export class CheckboxWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, ConfigEntryWidgetState> {
 
@@ -16,17 +20,17 @@ export class CheckboxWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Co
     render() {
         const entry = this.props.entry;
         return (
-            <Form.Field key={entry.label + "field"}>
-                <Form.Control>
-                    <Form.Label>{entry.label} </Form.Label>
-                    <Form.Checkbox
+            <Field key={entry.label + "field"}>
+                <Control>
+                    <Label>{entry.label} </Label>
+                    <Checkbox
                         checked={entry.value === true}
                         onChange={(event: React.FormEvent<HTMLInputElement>) => this.onEntryChange(entry, event)}
                         value={entry.help}
-                    ><Form.Help>{entry.help}</Form.Help>
-                    </Form.Checkbox>
-                </Form.Control>
-            </Form.Field>
+                    ><Help>{entry.help}</Help>
+                    </Checkbox>
+                </Control>
+            </Field>
         );
     }
 }

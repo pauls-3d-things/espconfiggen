@@ -3,7 +3,8 @@ import { generateConfigCpp, generateConfigH, generateMainCpp } from "../CodeGene
 import { Config } from "../ConfigApi";
 import { exampleNew, exampleTypes, exampleHue, exampleWifiSetup } from "../Examples";
 import { saveAs } from "file-saver";
-import { Navbar, Icon } from "react-bulma-components";
+import { Navbar } from "trunx/component/Navbar"
+import { Icon } from "trunx/component/Icon"
 
 export const saveFile = (content: string, name: string) => {
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
@@ -12,7 +13,7 @@ export const saveFile = (content: string, name: string) => {
 
 export const renderNavDownload = (config: Config) => {
     return (
-        <Navbar.Item dropdown={true} hoverable={true} >
+        <Navbar.Item isHoverable={true} >
             <Navbar.Link> Download </Navbar.Link>
             < Navbar.Dropdown >
                 {
@@ -40,7 +41,7 @@ export const renderNavDependency = () => {
 
 export const renderNavFile = (onNavSelect: (config: Config) => void) => {
     return (
-        <Navbar.Item dropdown={true} hoverable={true} >
+        <Navbar.Item isHoverable={true} >
             <Navbar.Link> File </Navbar.Link>
             < Navbar.Dropdown >
                 {

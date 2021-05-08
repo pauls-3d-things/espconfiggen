@@ -34,10 +34,13 @@ export const value2InputType = (v: string): InputType => {
 }
 
 export enum InputType {
+    LONG = "L",
     INTEGER = "I",
+    SHORT = "i",
     STRING = "S",
     CHECKBOX = "C",
     RGB = "R",
+    DOUBLE = "D",
     FLOAT = "F",
     APIBUTTON = "A",
     PASSWORD = "P"
@@ -46,8 +49,12 @@ export enum InputType {
 export const toCppType = (t: InputType) => {
     switch (t) {
         case InputType.RGB:
-        case InputType.INTEGER:
+        case InputType.LONG:
             return "uint32_t";
+        case InputType.INTEGER:
+            return "int32_t";
+        case InputType.SHORT:
+            return "int16_t";
         case InputType.STRING:
         case InputType.PASSWORD:
             return "const char*";
@@ -55,6 +62,8 @@ export const toCppType = (t: InputType) => {
             return "bool";
         case InputType.FLOAT:
             return "float";
+        case InputType.DOUBLE:
+            return "double";
     }
 };
 

@@ -13,10 +13,28 @@ export const exampleTypes = {
             "title": "Basic Types",
             "entries": [
                 {
-                    "label": "Integer",
+                    "label": "Unsigned Long",
                     "help": "This is a number type. (uint32_t)",
                     "type": "I",
                     "value": 1337
+                },
+                {
+                    "label": "Integer",
+                    "help": "This is a number type. (int32_t)",
+                    "type": "I",
+                    "value": 1337
+                },
+                {
+                    "label": "Short",
+                    "help": "This is a number type. (int16_t)",
+                    "type": "i",
+                    "value": 1337
+                },
+                {
+                    "label": "Double",
+                    "help": "This is a number type. (double)",
+                    "type": "D",
+                    "value": 123.45678
                 },
                 {
                     "label": "Float",

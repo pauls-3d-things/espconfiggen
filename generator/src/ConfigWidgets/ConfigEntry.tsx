@@ -15,7 +15,10 @@ export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void, isIn
         case InputType.STRING:
             configEntryWidget = InputWidget;
             break;
+        case InputType.LONG:
         case InputType.INTEGER:
+        case InputType.SHORT:
+        case InputType.DOUBLE:
         case InputType.FLOAT:
             configEntryWidget = NumberWidget;
             break;

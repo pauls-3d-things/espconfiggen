@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Config, getDataFromConfig, applyDataToConfig } from "./ConfigApi";
+import { Config, getDataFromConfig, applyDataToConfig, oswConfigToConfig, OswConfig, configDataToOswData, ConfigData, OswData } from "./ConfigApi";
 import { renderConfigPage } from "./ConfigWidgets/ConfigPage";
 
 interface ConfigAppState {
@@ -7,6 +7,7 @@ interface ConfigAppState {
     lastChange: number;
     saveEnabled: boolean;
     info?: string;
+    oswConfig?: OswConfig;
 }
 
 export class ConfigApp extends React.Component<{}, ConfigAppState> {
@@ -43,12 +44,16 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
             .then(config => {
                 // TODO: in case of a single list recreate the map using section labels^
                 if (!config.error) {
-                    this.setState({ config }); // display initial screen with defaults
+                    if (config.entries) {
+                        this.setState({ config: oswConfigToConfig(config), oswConfig: config })
+                    } else {
+                        this.setState({ config }); // display initial screen with defaults
+                        return fetchData();
+                    }
                 } else {
                     console.log(config);
                 }
             })
-            .then(fetchData)
             .catch((e) => {
                 console.log("Error loading config", e);
             });
@@ -61,7 +66,13 @@ export class ConfigApp extends React.Component<{}, ConfigAppState> {
     onSave = () => {
         this.setState({ saveEnabled: false });
 
-        const data = getDataFromConfig(this.state.config);
+        var data: OswData | ConfigData = getDataFromConfig(this.state.config);
+
+        // convert to OSW Config Data format if required
+        if (this.state.oswConfig) {
+            data = configDataToOswData(data, this.state.oswConfig);
+        }
+
         fetch("/data.json", {
             method: "POST",
             body: JSON.stringify(data)

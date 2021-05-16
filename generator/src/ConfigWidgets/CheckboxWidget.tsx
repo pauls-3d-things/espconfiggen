@@ -13,7 +13,7 @@ export class CheckboxWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Co
     }
 
     onEntryChange = (entry: any, event: React.FormEvent<HTMLInputElement>) => {
-        entry.value = !entry.value;
+        entry.value = entry.value == "0" ? "1" : "0";
         this.props.onEntryChanged();
     }
 
@@ -24,7 +24,7 @@ export class CheckboxWidget extends ConfigEntryWidget<ConfigEntryWidgetProps, Co
                 <Control>
                     <Label>{entry.label} </Label>
                     <Checkbox
-                        checked={entry.value === true}
+                        checked={entry.value ? entry.value != "0" : false}
                         onChange={(event: React.FormEvent<HTMLInputElement>) => this.onEntryChange(entry, event)}
                         value={entry.help}
                     ><Help>{entry.help}</Help>

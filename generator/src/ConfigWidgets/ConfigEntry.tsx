@@ -3,7 +3,7 @@ import { ConfigEntry, InputType } from "../ConfigApi";
 import { CheckboxWidget } from "./CheckboxWidget";
 import { InputWidget } from "./InputWidget";
 import { ConfigEntryWidget } from "./ConfigEntryWidget";
-import { RGBWidget } from "./HueWidget";
+import { RGBWidget } from "./RGBWidget";
 import { NumberWidget } from "./NumberWidget";
 import { ApiButtonWidget } from "./ApiButtonWidget";
 import { PasswordWidget } from "./PasswordWidget";

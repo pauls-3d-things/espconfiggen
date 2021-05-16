@@ -19,7 +19,7 @@ export class ConfigEntryWidget<P extends ConfigEntryWidgetProps, S extends Confi
 
     render() {
         return (
-            <div>Widget not implemented: {this.props.entry.value}</div>
+            <div>Widget not implemented: {this.props.entry.label} ({this.props.entry.type}) </div>
         );
     }
 }

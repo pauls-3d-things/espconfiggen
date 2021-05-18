@@ -43,7 +43,9 @@ export enum InputType {
     DOUBLE = "D",
     FLOAT = "F",
     APIBUTTON = "A",
-    PASSWORD = "P"
+    PASSWORD = "P",
+    DROPDOWN = "d",
+    TEXT = "T"
 }
 
 export const toCppType = (t: InputType) => {
@@ -55,6 +57,7 @@ export const toCppType = (t: InputType) => {
             return "int32_t";
         case InputType.SHORT:
             return "int16_t";
+        case InputType.DROPDOWN:
         case InputType.STRING:
         case InputType.PASSWORD:
             return "const char*";
@@ -158,13 +161,15 @@ export const configDataToOswData = (configData: ConfigData, oswConfig: OswConfig
     var result: OswData = { entries: [] };
 
 
-    oswConfig.entries.forEach(oswEntry => {
-        var data: OswDataEntry = {
-            id: oswEntry.id,
-            value: "" + configData[oswEntry.section][oswEntry.label]
-        };
-        result.entries.push(data);
-    })
+    oswConfig.entries
+        .filter(oswEntry => oswEntry.type != "T") // don't return static text
+        .forEach(oswEntry => {
+            var data: OswDataEntry = {
+                id: oswEntry.id,
+                value: "" + configData[oswEntry.section][oswEntry.label]
+            };
+            result.entries.push(data);
+        })
 
 
     return result;

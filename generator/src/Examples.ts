@@ -76,6 +76,18 @@ export const exampleTypes = {
                     "help": "This is an ApiButton type, it will HTTP GET the configured URL",
                     "type": "A",
                     "value": "/api/led/1/toggle"
+                },
+                {
+                    "label": "Drop Down List Selection",
+                    "help": "firstvalue,nextvalue,yetanother value",
+                    "type": "d",
+                    "value": "nextvalue"
+                },
+                {
+                    "label": "Static Text",
+                    "help": "This is a text that will be shown as a helper text.",
+                    "type": "T",
+                    "value": "This is a text that will be shown as plain text."
                 }
             ]
         }

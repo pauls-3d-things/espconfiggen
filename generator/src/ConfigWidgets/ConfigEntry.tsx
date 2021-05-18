@@ -7,6 +7,8 @@ import { RGBWidget } from "./RGBWidget";
 import { NumberWidget } from "./NumberWidget";
 import { ApiButtonWidget } from "./ApiButtonWidget";
 import { PasswordWidget } from "./PasswordWidget";
+import { TextWidget } from "./TextWidget";
+import { DropDownWidget } from "./DropDownWidget";
 
 export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void, isInGeneratorApp: boolean) => {
     let configEntryWidget;
@@ -33,6 +35,12 @@ export const renderEntry = (entry: ConfigEntry, onEntryChanged: () => void, isIn
             break;
         case InputType.PASSWORD:
             configEntryWidget = PasswordWidget;
+            break;
+        case InputType.TEXT:
+            configEntryWidget = TextWidget;
+            break;
+        case InputType.DROPDOWN:
+            configEntryWidget = DropDownWidget;
             break;
         default:
             configEntryWidget = ConfigEntryWidget;
